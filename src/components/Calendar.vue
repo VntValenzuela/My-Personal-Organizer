@@ -3,9 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <v-btn color="primary" class="mr-4" @click="dialog = true" dark>
-            New Event
-          </v-btn>
+          <Appointment />
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
             Today
           </v-btn>
@@ -50,41 +48,6 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-
-      <!-- Add event dialog -->
-      <v-dialog v-model="dialog" max-width="500">
-        <v-card>
-          <v-container>
-            <v-form @submit.prevent="addEvent">
-              <v-text-field
-                v-model="name"
-                type="text"
-                label="event name (required)">
-              </v-text-field>
-              <v-text-field v-model="details" type="text" label="detail">
-              </v-text-field>
-              <v-text-field v-model="start" type="date" label="start(required)">
-              </v-text-field>
-              <v-text-field v-model="end" type="date" label="end (required)">
-              </v-text-field>
-              <v-text-field
-                v-model="color"
-                type="color"
-                label="color (click to opend color menu)"
-              >
-              </v-text-field>
-              <v-btn
-                type="submit"
-                color="primary"
-                class="mr-4"
-                @click.stop="dialog = false"
-              >
-                Create Event
-              </v-btn>
-            </v-form>
-          </v-container>
-        </v-card>
-      </v-dialog>
 
       <v-sheet height="600">
         <v-calendar
@@ -150,7 +113,12 @@
 </template>
 
 <script>
+import Appointment from "@/components/Appointment.vue";
+
 export default {
+  components: {
+    Appointment
+  },
   data: () => ({
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
@@ -161,8 +129,6 @@ export default {
       day: "Day",
       "4day": "4 Days"
     },
-    name: null,
-    details: null,
     start: null,
     end: null,
     color: "#1976D2",
@@ -186,16 +152,15 @@ export default {
         end: "2020-07-01",
         color: "#ff8080"
       }
-    ],
-    dialog: false
+    ]
   }),
   mounted() {
     this.getEvents();
   },
   methods: {
     getEvents() {}, //Falta implementar
-    updateEvent(){}, //Falta implementar
-    deleteEvent(){}, //Falta implementar
+    updateEvent() {}, //Falta implementar
+    deleteEvent() {}, //Falta implementar
     addEvent() {}, // Falta implentar
 
     viewDay({ date }) {

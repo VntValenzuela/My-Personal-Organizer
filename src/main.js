@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import TextareaAutosize from 'vue-textarea-autosize'
+import TextareaAutosize from "vue-textarea-autosize";
 
 Vue.use(TextareaAutosize);
 
