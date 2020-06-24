@@ -25,11 +25,21 @@ export default new Vuex.Store({
         id: "SAP-0001",
         name: "Dentist",
         description: "I need to go to dentist",
-        date: "06/18/2020",
+        date: "2020-06-22",
         startHour: "10:00",
         endHour: "11:00",
         agendaId: "ANG-0001",
         participants: ["PART-001", "PART-002"]
+      },
+      {
+        id: "SAP-0002",
+        name: "Viaje de Negocios",
+        description: "Viaje a Argentina",
+        date: "2020-06-23",
+        startHour: "22:00",
+        endHour: "23:00",
+        agendaId: "ANG-0001",
+        participants: []
       }
     ],
     postponedAppointments: [
@@ -69,6 +79,9 @@ export default new Vuex.Store({
     },
     deleteScheduledAppointment({ commit }, deletedScheduledAppointmentId) {
       commit("deleteScheduledAppointment", deletedScheduledAppointmentId);
+    },
+    updateScheduledAppointment({ commit }, updatedScheduledAppointment) {
+      commit("updateScheduledAppointment", updatedScheduledAppointment);
     }
   },
   mutations: {
@@ -80,6 +93,15 @@ export default new Vuex.Store({
         scheduledAppointment =>
           scheduledAppointment.id !== deletedScheduledAppointmentId
       );
+    },
+    updateScheduledAppointment(state, updatedScheduledAppointment) {
+      const updateIndex = state.scheduledAppointments.findIndex(
+        scheduledAppointment =>
+          scheduledAppointment.id === updatedScheduledAppointment.id
+      );
+      if (updateIndex >= 0) {
+        state.scheduledAppointments[updateIndex] = updatedScheduledAppointment;
+      }
     }
   },
   getters: {

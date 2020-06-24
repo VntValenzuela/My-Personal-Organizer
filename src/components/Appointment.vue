@@ -1,9 +1,9 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" max-width="500">
+    <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-container>
-          <v-form>
+          <v-form ref="form">
             <v-text-field
               v-model="appointment.name"
               autocomplete="off"
@@ -11,7 +11,7 @@
             >
             </v-text-field>
             <v-text-field
-              v-model="appointment.details"
+              v-model="appointment.description"
               autocomplete="off"
               label="Description"
             >
@@ -106,15 +106,13 @@
             <v-select
               v-model="appointment.participants"
               :items="participants"
-              label="Choose an Agenda"
+              label="Select participants"
             ></v-select>
-            <v-btn
-              type="submit"
-              color="primary"
-              class="mr-4"
-              @click.stop="dialog = false"
-            >
-              Create Event
+            <v-btn color="primary" class="mr-4" @click.stop="reset"
+              >CLOSE
+            </v-btn>
+            <v-btn color="primary" class="mr-4" @click.stop="dispatchAction"
+              >{{ newAppointment ? "SAVE" : "UPDATE" }}
             </v-btn>
           </v-form>
         </v-container>
@@ -130,16 +128,6 @@ export default {
   data() {
     return {
       // dialog: false,
-      appointment: {
-        id: null,
-        name: null,
-        description: null,
-        date: null,
-        startHour: null,
-        endHour: null,
-        agendaID: null,
-        participants: []
-      },
       color: "#1976D2",
       time: null,
       menu0: false,
@@ -191,12 +179,23 @@ export default {
       const defaultArray = ["Default"];
       const agendasNames = this.agendas.map(agenda => agenda.name);
       return defaultArray.concat(agendasNames);
-    }
+    },
+    appointment() {
+      console.log(
+        `APPOINTMENT-> Change ${JSON.stringify(this.selectedAppointment)}`
+      );
+      return Object.assign({}, this.selectedAppointment);
+    } /*,
+    dialogProp() {
+      console.log(`APPOINTMENT-> Dialog change ${this.dialog}`);
+      return this.dialog;
+    }*/
   },
   methods: {
     addScheduledAppointment() {
       this.generateNewId();
       this.$store.dispatch("addScheduledAppointment", this.appointment);
+      this.reset();
     },
     generateNewId() {
       const numberOfAppointments = this.appointments.length;
@@ -212,10 +211,24 @@ export default {
       if (!this.newAppointment) {
         this.appointment = this.selectedAppointment;
       }
+    },
+    dispatchAction() {
+      if (this.newAppointment) {
+        this.generateNewId();
+        this.$store.dispatch("addScheduledAppointment", this.appointment);
+        console.log("sending appointment");
+      } else {
+        this.$store.dispatch("updateScheduledAppointment", this.appointment);
+      }
+      this.reset();
+    },
+    reset() {
+      //this.$refs.form.reset();
+      this.$emit("close");
     }
   },
   mounted() {
-    this.initializeData();
+    // this.initializeData();
   }
 };
 </script>
