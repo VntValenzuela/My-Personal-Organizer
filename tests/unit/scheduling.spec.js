@@ -5,17 +5,31 @@ import Calendar from "@/components/Calendar.vue";
 
 import Vuex from "vuex";
 import Vuetify from "vuetify";
-import store from "@/store";
+//import store from "@/store";
+
+import mockScheduledAppointments from "./mockScheduledAppointments";
+import actions from "@/store/actions";
+import mutations from "@/store/mutations";
+import getters from "@/store/getters";
 
 describe("Scheduling Appointments / meetings", () => {
   let localVue;
   let vuetify;
+  let store;
   beforeEach(() => {
     localVue = createLocalVue();
     localVue.use(Vuex);
     localVue.use(Vuetify);
 
     vuetify = new Vuetify();
+
+    store = new Vuex.Store({
+      state: mockScheduledAppointments,
+      actions,
+      mutations,
+      getters,
+      modules: {}
+    });
   });
   it("Create a new Appointment", () => {
     const wrapper = mount(Appointment, {
@@ -23,7 +37,7 @@ describe("Scheduling Appointments / meetings", () => {
       vuetify,
       localVue
     });
-    const initialLength = 1;
+    const initialLength = 2;
     const appointments = wrapper.vm.appointments;
     assert.equal(appointments.length, initialLength);
 
@@ -37,7 +51,7 @@ describe("Scheduling Appointments / meetings", () => {
     };
     wrapper.vm.addScheduledAppointment();
     console.log(JSON.stringify(wrapper.vm.$data.appointment));
-    let expectedLength = 2;
+    let expectedLength = 3;
 
     assert.equal(appointments.length, expectedLength);
   });
@@ -47,7 +61,7 @@ describe("Scheduling Appointments / meetings", () => {
       vuetify,
       localVue
     });
-    const initialLength = 2;
+    const initialLength = 3;
     const appointments = wrapper.vm.appointments;
     console.log(JSON.stringify(appointments));
     assert.equal(appointments.length, initialLength);
@@ -56,7 +70,7 @@ describe("Scheduling Appointments / meetings", () => {
     wrapper.vm.deleteScheduledAppointment(idToDelete);
     console.log(JSON.stringify(wrapper.vm.appointments));
     const appointmentsAfterDetele = wrapper.vm.appointments;
-    let expectedLength = 1;
+    let expectedLength = 2;
 
     assert.equal(appointmentsAfterDetele.length, expectedLength);
   });
