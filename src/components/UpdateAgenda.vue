@@ -1,9 +1,6 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="500px">
+  <v-dialog v-model="show" persistent max-width="645px">
     <v-card>
-      <v-card-title>
-        <span class="headline">Update agenda</span>
-      </v-card-title>
       <v-col cols="12">
         <v-text-field v-model="name" label="Name" required></v-text-field>
       </v-col>
@@ -14,17 +11,15 @@
           required
         ></v-text-field>
       </v-col>
-      <v-row justify="center">
-        <v-time-picker
-          v-if="this.appointments.length == 0"
-          v-model="start"
-        ></v-time-picker>
-      </v-row>
-      <v-row justify="center">
-        <v-time-picker
-          v-if="this.appointments.length == 0"
-          v-model="end"
-        ></v-time-picker>
+      <v-row justify="center" v-if="this.appointments.length == 0">
+        <v-col>
+          <div class="grey--text" text-xs-center>Start</div>
+          <v-time-picker v-model="start"></v-time-picker>
+        </v-col>
+        <v-col>
+          <div class="grey--text" text-xs-center>Start</div>
+          <v-time-picker v-model="end"></v-time-picker>
+        </v-col>
       </v-row>
       <v-spacer></v-spacer>
       <v-card-actions>

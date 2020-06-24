@@ -3,9 +3,17 @@
     <v-container class="my-10" grid-list-md>
       <h1 id="title">AGENDAS</h1>
       <br />
-      <v-btn id="create" color="blue" @click.stop="dialogCreate = true"
-        >CREATE</v-btn
+      <v-btn
+        id="create"
+        dark
+        fab
+        middle
+        right
+        color="blue"
+        @click.stop="dialogCreate = true"
       >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
       <br />
       <br />
       <v-layout row wrap>

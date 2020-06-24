@@ -7,7 +7,10 @@ import VueRouter from "vue-router";
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 
-import store from "@/store";
+import mockAgendaState from "./mockAgenda";
+import actions from "@/store/actions";
+import mutations from "@/store/mutations";
+import getters from "@/store/getters";
 
 describe("Agenda Module", () => {
   it("Don't create agendas with name repeated", () => {
@@ -30,6 +33,15 @@ describe("Agenda Module", () => {
     global.alert = message => {
       console.log(message);
     };
+
+    const store = new Vuex.Store({
+      state: mockAgendaState,
+      actions,
+      mutations,
+      getters,
+      modules: {}
+    });
+
     const wrapper = mount(Agendas, {
       store,
       router,
@@ -55,7 +67,8 @@ describe("Agenda Module", () => {
       appointments: []
     });
     assert.equal(agendas.length, expectedLength);
-  });/*
+  });
+  /*
   it("Don't delete agenda with appointments", () => {
     const localVue = createLocalVue();
 
@@ -76,6 +89,15 @@ describe("Agenda Module", () => {
     global.alert = message => {
       console.log(message);
     };
+
+    const store = new Vuex.Store({
+      state: mockAgendaState,
+      actions,
+      mutations,
+      getters,
+      modules: {}
+    });
+
     const wrapper = mount(Agendas, {
       store,
       router,
