@@ -1,6 +1,7 @@
 import { assert } from "chai";
-import { mount, createLocalVue } from "@vue/test-utils";
+import { shallowMount, mount, createLocalVue } from "@vue/test-utils";
 import Appointment from "@/components/Appointment.vue";
+import Calendar from "@/components/Calendar.vue";
 
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -22,7 +23,6 @@ describe("Scheduling Appointments / meetings", () => {
       vuetify,
       localVue
     });
-    wrapper.vm.$forceUpdate();
     const initialLength = 1;
     const appointments = wrapper.vm.appointments;
     assert.equal(appointments.length, initialLength);
@@ -35,9 +35,29 @@ describe("Scheduling Appointments / meetings", () => {
       endHour: "23:59",
       participants: []
     };
-    wrapper.vm.save();
+    wrapper.vm.addScheduledAppointment();
+    console.log(JSON.stringify(wrapper.vm.$data.appointment));
     let expectedLength = 2;
 
     assert.equal(appointments.length, expectedLength);
+  });
+  it("Delete an Appointment", () => {
+    const wrapper = shallowMount(Calendar, {
+      store,
+      vuetify,
+      localVue
+    });
+    const initialLength = 2;
+    const appointments = wrapper.vm.appointments;
+    console.log(JSON.stringify(appointments));
+    assert.equal(appointments.length, initialLength);
+
+    const idToDelete = "SAP-0001";
+    wrapper.vm.deleteScheduledAppointment(idToDelete);
+    console.log(JSON.stringify(wrapper.vm.appointments));
+    const appointmentsAfterDetele = wrapper.vm.appointments;
+    let expectedLength = 1;
+
+    assert.equal(appointmentsAfterDetele.length, expectedLength);
   });
 });

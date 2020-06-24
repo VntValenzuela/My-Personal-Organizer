@@ -22,13 +22,14 @@ export default new Vuex.Store({
     ],
     scheduledAppointments: [
       {
+        id: "SAP-0001",
         name: "Dentist",
         description: "I need to go to dentist",
         date: "06/18/2020",
         startHour: "10:00",
         endHour: "11:00",
         agendaId: "ANG-0001",
-        participants: ["PART-001"]
+        participants: ["PART-001", "PART-002"]
       }
     ],
     postponedAppointments: [
@@ -65,16 +66,31 @@ export default new Vuex.Store({
   actions: {
     addScheduledAppointment({ commit }, newScheduledAppointment) {
       commit("addScheduledAppointment", newScheduledAppointment);
+    },
+    deleteScheduledAppointment({ commit }, deletedScheduledAppointmentId) {
+      commit("deleteScheduledAppointment", deletedScheduledAppointmentId);
     }
   },
   mutations: {
     addScheduledAppointment(state, newScheduledAppointment) {
       state.scheduledAppointments.push(newScheduledAppointment);
+    },
+    deleteScheduledAppointment(state, deletedScheduledAppointmentId) {
+      state.scheduledAppointments = state.scheduledAppointments.filter(
+        scheduledAppointment =>
+          scheduledAppointment.id !== deletedScheduledAppointmentId
+      );
     }
   },
   getters: {
     getScheduledAppointments(state) {
       return state.scheduledAppointments;
+    },
+    getAgendas(state) {
+      return state.agendas;
+    },
+    getParticipants(state) {
+      return state.participants;
     }
   },
   modules: {}

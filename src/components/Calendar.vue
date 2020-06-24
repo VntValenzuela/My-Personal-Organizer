@@ -3,7 +3,9 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <Appointment />
+          <v-btn color="primary" class="mr-4" @click="dialog = true" dark>
+            New Event
+          </v-btn>
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
             Today
           </v-btn>
@@ -109,11 +111,18 @@
         </v-menu>
       </v-sheet>
     </v-col>
+    <Appointment
+      :selectedAppointment="selectedAppointment"
+      :dialog="dialog"
+      :newAppointment="newAppointment"
+      @close="dialog = false"
+    />
   </v-row>
 </template>
 
 <script>
 import Appointment from "@/components/Appointment.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -136,6 +145,9 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    dialog: false,
+    newAppointment: false,
+    selectedAppointment: {},
     events: [
       {
         name: "Cita con el doctor",
@@ -154,6 +166,15 @@ export default {
       }
     ]
   }),
+  computed: {
+    ...mapGetters(["getScheduledAppointments", "getAgendas"]),
+    appointments() {
+      return this.getScheduledAppointments;
+    },
+    agendas() {
+      return this.getAgendas;
+    },
+  },
   mounted() {
     this.getEvents();
   },
@@ -204,6 +225,12 @@ export default {
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
+    },
+    deleteScheduledAppointment(deletedScheduledAppointmentId) {
+      this.$store.dispatch(
+        "deleteScheduledAppointment",
+        deletedScheduledAppointmentId
+      );
     }
   }
 };
