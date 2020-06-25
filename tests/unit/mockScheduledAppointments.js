@@ -1,37 +1,17 @@
-import Vue from "vue";
-import Vuex from "vuex";
-
-import actions from "./actions";
-import getters from "./getters";
-import mutations from "./mutations";
-
-Vue.use(Vuex);
-
-const state = {
+export default {
   agendas: [
     {
       agendaId: "ANG-0001",
       name: "Work",
-      description: "my agenda for work",
-      start: "8:30",
-      end: "18:30",
-      appointments: ["not-null"]
-    },
-    {
-      agendaId: "ANG-0002",
-      name: "Personal",
-      description: "my agenda for my things",
-      start: "18:30",
-      end: "21:30",
-      appointments: []
-    },
-    {
-      agendaId: "ANG-0003",
-      name: "Entertainment",
-      description: "for entertainment",
-      start: "11:30",
-      end: "14:30",
-      appointments: []
+      description: "My Agenda to manage my work",
+      startHour: "10:00",
+      endHour: "16:00",
+      appointments: [
+        // scheduledAppointments.filter(app => app.agendaId === this.agendaId)
+        // concat
+        // Iterate to simulate by clonning
+        // recursiveAppointments.filter(app => app.agendaId === this.agendaId)
+      ]
     }
   ],
   scheduledAppointments: [
@@ -87,11 +67,3 @@ const state = {
     }
   ]
 };
-
-export default new Vuex.Store({
-  state,
-  actions,
-  mutations,
-  getters,
-  modules: {}
-});

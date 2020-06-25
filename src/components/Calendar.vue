@@ -3,7 +3,12 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-          <v-btn color="primary" class="mr-4" @click="dialog = true" dark>
+          <v-btn
+            color="primary"
+            class="mr-4"
+            dark
+            @click="sendData(selectedAppointment, true)"
+          >
             New Event
           </v-btn>
           <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
@@ -51,41 +56,6 @@
         </v-toolbar>
       </v-sheet>
 
-      <!-- Add event dialog -->
-      <v-dialog v-model="dialog" max-width="500">
-        <v-card>
-          <v-container>
-            <v-form @submit.prevent="addEvent">
-              <v-text-field
-                v-model="name"
-                type="text"
-                label="event name (required)">
-              </v-text-field>
-              <v-text-field v-model="details" type="text" label="detail">
-              </v-text-field>
-              <v-text-field v-model="start" type="date" label="start(required)">
-              </v-text-field>
-              <v-text-field v-model="end" type="date" label="end (required)">
-              </v-text-field>
-              <v-text-field
-                v-model="color"
-                type="color"
-                label="color (click to opend color menu)"
-              >
-              </v-text-field>
-              <v-btn
-                type="submit"
-                color="primary"
-                class="mr-4"
-                @click.stop="dialog = false"
-              >
-                Create Event
-              </v-btn>
-            </v-form>
-          </v-container>
-        </v-card>
-      </v-dialog>
-
       <v-sheet height="600">
         <v-calendar
           ref="calendar"
@@ -110,16 +80,19 @@
               <v-btn @click="deleteEvent(selectedEvent.id)" icon>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
+              <v-btn @click="deleteScheduledAppointment(selectedEvent.id)" icon>
+                <v-icon color="blue darken-2">mdi-delete</v-icon>
+              </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
               <form v-if="currentlyEditing !== selectedEvent.id">
-                {{ selectedEvent.details }}
+                {{ selectedEvent.description }}
               </form>
               <form v-else>
                 <textarea-autosize
-                  v-model="selectedEvent.details"
+                  v-model="selectedEvent.description"
                   type="text"
                   style="width: 100%"
                   :min-height="100"
@@ -141,16 +114,31 @@
               <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">
                 Save
               </v-btn>
+              <v-btn small @click="sendData(selectedEvent, false)">
+                UPDATE
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
       </v-sheet>
     </v-col>
+    <Appointment
+      :selectedAppointment="selectedAppointment"
+      :dialog="dialog"
+      :newAppointment="newAppointment"
+      @close="dialog = false"
+    />
   </v-row>
 </template>
 
 <script>
+import Appointment from "@/components/Appointment.vue";
+import { mapGetters } from "vuex";
+
 export default {
+  components: {
+    Appointment
+  },
   data: () => ({
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
@@ -161,8 +149,6 @@ export default {
       day: "Day",
       "4day": "4 Days"
     },
-    name: null,
-    details: null,
     start: null,
     end: null,
     color: "#1976D2",
@@ -170,7 +156,10 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [
+    dialog: false,
+    newAppointment: false,
+    selectedAppointment: {}
+    /*events: [
       {
         name: "Cita con el doctor",
         details: "Revision medica con el Dr.Jaldin",
@@ -186,16 +175,34 @@ export default {
         end: "2020-07-01",
         color: "#ff8080"
       }
-    ],
-    dialog: false
+    ]*/
   }),
+  computed: {
+    ...mapGetters(["getScheduledAppointments", "getAgendas"]),
+    appointments() {
+      return this.getScheduledAppointments;
+    },
+    agendas() {
+      return this.getAgendas;
+    },
+    events() {
+      return this.getScheduledAppointments.map(appointment => {
+        return {
+          ...appointment,
+          start: `${appointment.date} ${appointment.startHour}`,
+          end: `${appointment.date} ${appointment.endHour}`,
+          color: "#ff8080"
+        };
+      });
+    }
+  },
   mounted() {
     this.getEvents();
   },
   methods: {
     getEvents() {}, //Falta implementar
-    updateEvent(){}, //Falta implementar
-    deleteEvent(){}, //Falta implementar
+    updateEvent() {}, //Falta implementar
+    deleteEvent() {}, //Falta implementar
     addEvent() {}, // Falta implentar
 
     viewDay({ date }) {
@@ -239,6 +246,29 @@ export default {
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
+    },
+    deleteScheduledAppointment(deletedScheduledAppointmentId) {
+      this.$store.dispatch(
+        "deleteScheduledAppointment",
+        deletedScheduledAppointmentId
+      );
+      this.selectedOpen = false;
+    },
+    sendData(selectedAppointment, newAppointment) {
+      console.log(`CALENDAR-> Sending data`);
+      if (newAppointment) {
+        this.selectedAppointment = {};
+        console.log(
+          `CALENDAR-> New ${JSON.stringify(this.selectedAppointment)}`
+        );
+      } else {
+        this.selectedAppointment = selectedAppointment;
+        console.log(
+          `CALENDAR-> New ${JSON.stringify(this.selectedAppointment)}`
+        );
+      }
+      this.newAppointment = newAppointment;
+      this.dialog = true;
     }
   }
 };

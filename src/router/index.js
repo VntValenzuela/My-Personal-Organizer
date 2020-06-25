@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Agendas from "../views/Agendas.vue";
-import Home from "../views/Home.vue";
+import Organizer from "../views/Organizer.vue";
 
 Vue.use(VueRouter);
 
@@ -12,9 +12,9 @@ const routes = [
     component: Agendas
   },
   {
-    path: "/calendary/:id",
-    name: "Calendary",
-    component: Home
+    path: "/organizer",
+    name: "Organizer",
+    component: Organizer
   },
   {
     path: "/about",
