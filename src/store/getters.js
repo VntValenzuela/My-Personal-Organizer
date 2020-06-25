@@ -1,8 +1,12 @@
+"use strict";
+
 export default {
   getAgendas(state) {
     return state.agendas;
   },
-  //PARTICIPANTS
+  getScheduledAppointments(state) {
+    return state.scheduledAppointments;
+  },
   getParticipants(state) {
     return state.participants;
   }

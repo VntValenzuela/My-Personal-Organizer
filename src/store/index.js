@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+
 import actions from "./actions";
 import getters from "./getters";
 import mutations from "./mutations";
@@ -9,6 +10,7 @@ Vue.use(Vuex);
 const state = {
   agendas: [
     {
+      agendaId: "ANG-0001",
       name: "Work",
       description: "my agenda for work",
       start: "8:30",
@@ -16,6 +18,7 @@ const state = {
       appointments: ["not-null"]
     },
     {
+      agendaId: "ANG-0002",
       name: "Personal",
       description: "my agenda for my things",
       start: "18:30",
@@ -23,6 +26,7 @@ const state = {
       appointments: []
     },
     {
+      agendaId: "ANG-0003",
       name: "Entertainment",
       description: "for entertainment",
       start: "11:30",
@@ -32,46 +36,73 @@ const state = {
   ],
   participants: [
     {
+      participantId: 1,
       name: "Juan Perez",
       contactNumber: 71234567,
-      amountOfAppointments: 0,
-      appointments: []
+      upcomingAppointments: []
     },
     {
+      participantId: 2,
       name: "Andrea Teran",
       contactNumber: 72244661,
-      amountOfAppointments: 0,
-      appointments: []
+      upcomingAppointments: []
     },
     {
+      participantId: 3,
       name: "Fernando Torrez",
       contactNumber: 73467812,
-      amountOfAppointments: 0,
-      appointments: []
+      upcomingAppointments: []
     },
     {
+      participantId: 4,
       name: "Carla Andrade",
       contactNumber: 79983812,
-      amountOfAppointments: 0,
-      appointments: []
+      upcomingAppointments: []
+    }
+  ],
+  scheduledAppointments: [
+    {
+      id: "SAP-0001",
+      name: "Dentist",
+      description: "I need to go to dentist",
+      date: "2020-06-22",
+      startHour: "10:00",
+      endHour: "11:00",
+      agendaId: "ANG-0001",
+      participants: ["PART-001", "PART-002"]
     },
     {
-      name: "Luis Torrico",
-      contactNumber: 67420345,
-      amountOfAppointments: 0,
-      appointments: []
-    },
+      id: "SAP-0002",
+      name: "Viaje de Negocios",
+      description: "Viaje a Argentina",
+      date: "2020-06-23",
+      startHour: "22:00",
+      endHour: "23:00",
+      agendaId: "ANG-0001",
+      participants: []
+    }
+  ],
+  postponedAppointments: [
     {
-      name: "Camila Cossio",
-      contactNumber: 67234591,
-      amountOfAppointments: 0,
-      appointments: []
-    },
+      name: "Dentist",
+      description: "I need to go to dentist"
+      // date: "06/18/2020"
+      // startHour: "10:00",
+      // endHour: "11:00",
+      // agendaId: "ANG-001"
+    }
+  ],
+  recursiveAppointments: [
     {
-      name: "Karen Flores",
-      contactNumber: 75588992,
-      amountOfAppointments: 0,
-      appointments: []
+      name: "Dentist",
+      description: "I need to go to dentist",
+      date: "06/19/2020",
+      endDate: "12/18/2020",
+      frequency: "Day|Week|Month",
+      startHour: "10:00",
+      endHour: "11:00",
+      agendaId: "ANG-0001",
+      participants: ["PART-001"]
     }
   ]
 };

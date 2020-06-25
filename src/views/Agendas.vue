@@ -28,8 +28,7 @@
           <v-card class="mx-auto" max-width="250">
             <router-link
               :to="{
-                name: 'Calendary',
-                params: { id: agenda.name }
+                name: 'Organizer'
               }"
             >
               <v-card-title>

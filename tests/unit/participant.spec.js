@@ -1,8 +1,7 @@
 import { assert } from "chai";
 import { mount, createLocalVue } from "@vue/test-utils";
 import Participants from "@/components/Participant.vue";
-import Calendary from "@/views/Home.vue";
-import VueRouter from "vue-router";
+//import Calendar from "@/components/Calendar.vue";
 
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -14,7 +13,6 @@ import getters from "@/store/getters";
 
 describe("Participants CRUD methods.", () => {
   let localVue;
-  let router;
   let vuetify;
   let store;
   beforeEach(() => {
@@ -22,16 +20,6 @@ describe("Participants CRUD methods.", () => {
     localVue.use(Vuex);
     localVue.use(Vuetify);
     vuetify = new Vuetify();
-    localVue.use(VueRouter);
-    router = new VueRouter({
-      routes: [
-        {
-          path: "/calendary/:id",
-          name: "Calendary",
-          component: Calendary
-        }
-      ]
-    });
     store = new Vuex.Store({
       state: mockParticipantsState,
       actions,
@@ -47,13 +35,13 @@ describe("Participants CRUD methods.", () => {
   it("Adding new participant works correctly.", () => {
     const wrapper = mount(Participants, {
       store,
-      router,
       vuetify,
       localVue
     });
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength + 1;
     //If all fields are valid
+    wrapper.vm.$data.participantId = 5;
     wrapper.vm.$data.name = "Vanessa Bustillos";
     wrapper.vm.$data.contactNumber = 67427046;
 
@@ -63,15 +51,20 @@ describe("Participants CRUD methods.", () => {
 /*  it("Selecting a participant from global participants list works correctly.", () => {
     const wrapper = mount(Participants, {
       store,
-      router,
+      vuetify,
+      localVue
+    });
+  });
+  it("Don't add a participant if it has already been added to an appointment.", () => {
+    const wrapper = mount(Participants, {
+      store,
       vuetify,
       localVue
     });
   });*/
-  it("Don't add a participant if it has already been added to an appointment.", () => {
+  it("Don't add a participant if there was another participant with the same name", () => {
     const wrapper = mount(Participants, {
       store,
-      router,
       vuetify,
       localVue
     });
@@ -87,24 +80,25 @@ describe("Participants CRUD methods.", () => {
   it("Updating as participant works correctly.", () => {
     const wrapper = mount(Participants, {
       store,
-      router,
       vuetify,
       localVue
     });
+    let participantId = 3;
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength;
     const expectedContactNumber = wrapper.vm.$store.state.participants.find(
-      participant => participant.name === "Vanessa Bustillos"
+      participant => participant.participantId === participantId
     ).contactNumber;
     //If all fields are valid
-    wrapper.vm.$data.name = "Vanessa Bustillos";
+    wrapper.vm.$data.participantId = 3;
+    wrapper.vm.$data.name = "Paola Canedo";
     wrapper.vm.$data.contactNumber = 72740037;
 
     wrapper.vm._updateParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
     assert.notEqual(
       wrapper.vm.$store.state.participants.find(
-        participant => participant.name === "Vanessa Bustillos"
+        participant => participant.participantId === participantId
       ).contactNumber,
       expectedContactNumber
     );
@@ -116,14 +110,13 @@ describe("Participants CRUD methods.", () => {
   it("Delete a participant from the global list if it was belonging to past appointments.", () => {
     const wrapper = mount(Participants, {
       store,
-      router,
       vuetify,
       localVue
     });
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength - 1;
     //If all fields are valid
-    wrapper.vm.$data.name = "Vanessa Bustillos";
+    wrapper.vm.$data.participantId = 5;
 
     wrapper.vm._deleteParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);

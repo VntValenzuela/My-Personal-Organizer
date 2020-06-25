@@ -4,6 +4,7 @@ export default {
   name: "Participant",
   data() {
     return {
+      participantId: Number,
       name: String,
       contactNumber: Number,
       upcomingAppointments: Array
@@ -28,12 +29,13 @@ export default {
           if (participant.name === this.name) {
             existingName = true;
             alert(
-              "This participant's name already exists!. Please introduce another one."
+              "This participant's name already exists!. Please introduce another one or write the complete name."
             );
           }
         });
         if (!existingName) {
           this.registerParticipant({
+            participantId: this.participantId,
             name: this.name,
             contactNumber: this.contactNumber,
             upcomingAppointments: []
@@ -42,12 +44,13 @@ export default {
       }
     },
     _updateParticipant() {
-      if (this.contactNumber < 1000000) {
-        alert("The contact number must contain at least 7 digits.");
+      if (this.validateData()) {
+        alert("All fields must be filled.");
       } else {
         this.participantList.forEach(participant => {
-          if (participant.name === this.name) {
+          if (participant.participantId === this.participantId) {
             this.updateParticipant({
+              participantId: participant.participantId,
               name: this.name,
               contactNumber: this.contactNumber,
               upcomingAppointments: []
@@ -58,7 +61,7 @@ export default {
     },
     _deleteParticipant() {
       this.participantList.forEach(participant => {
-        if (participant.name === this.name) {
+        if (participant.participantId === this.participantId) {
           if (participant.upcomingAppointments.length === 0) {
             this.deleteParticipant(participant);
           } else {

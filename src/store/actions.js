@@ -1,3 +1,5 @@
+"use strict";
+
 export default {
   //AGENDA
   createAgenda({ commit }, agendaCreated) {
@@ -22,8 +24,19 @@ export default {
   },
   deleteParticipant({ commit }, participantToDelete) {
     commit("mutateDeleteParticipant", participantToDelete);
-  } /*,
+  },
+  /*
   deleteParticipantFromAppointment({ commit }, participantToDelete) {
     commit("mutateDeleteParticipantFromAppoitment", participantToDelete);
   }*/
+  //SCHEDULED APPOINTMENTS
+  addScheduledAppointment({ commit }, newScheduledAppointment) {
+    commit("addScheduledAppointment", newScheduledAppointment);
+  },
+  deleteScheduledAppointment({ commit }, deletedScheduledAppointmentId) {
+    commit("deleteScheduledAppointment", deletedScheduledAppointmentId);
+  },
+  updateScheduledAppointment({ commit }, updatedScheduledAppointment) {
+    commit("updateScheduledAppointment", updatedScheduledAppointment);
+  }
 };
