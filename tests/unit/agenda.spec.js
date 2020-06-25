@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { mount, createLocalVue } from "@vue/test-utils";
 import Agendas from "@/views/Agendas.vue";
-import Calendary from "@/views/Home.vue";
+import Organizer from "@/views/Organizer.vue";
 import VueRouter from "vue-router";
 
 import Vuex from "vuex";
@@ -24,9 +24,9 @@ describe("Agenda Module", () => {
     const router = new VueRouter({
       routes: [
         {
-          path: "/calendary/:id",
-          name: "Calendary",
-          component: Calendary
+          path: "/organizer",
+          name: "Organizer",
+          component: Organizer
         }
       ]
     });
@@ -80,9 +80,9 @@ describe("Agenda Module", () => {
     const router = new VueRouter({
       routes: [
         {
-          path: "/calendary/:id",
-          name: "Calendary",
-          component: Calendary
+          path: "/organizer",
+          name: "Organizer",
+          component: Organizer
         }
       ]
     });
