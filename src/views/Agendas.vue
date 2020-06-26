@@ -14,6 +14,15 @@
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
+      <v-btn
+        class="ma-2"
+        color="#CD853F"
+        fab
+        dark
+        @click.stop="redirectToParticipant()"
+      >
+        <v-icon light :size="30">mdi-account-circle</v-icon>
+      </v-btn>
       <br />
       <br />
       <v-layout row wrap>
@@ -135,6 +144,9 @@ export default {
     openDeleteDialog(agenda) {
       this.$refs.deleteDialog.setName(agenda.name);
       this.dialogDelete = true;
+    },
+    redirectToParticipant() {
+      this.$router.push("Participant");
     }
   }
 };
