@@ -6,19 +6,33 @@ export default {
       agendaFind => agendaFind.name === agenda.name
     );
     if (state.agendas[foudAgendatIndex] == null) {
+      agenda.agendaId =
+        "A-" +
+        (Number(
+          state.agendas[state.agendas.length - 1].agendaId.split("-")[1]
+        ) +
+          1);
+      var color = "#";
+      for (var i = 0; i < 6; i++) {
+        var letters = "0123456789ABCDEF";
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      agenda.color = color;
       state.agendas.push(agenda);
     } else {
       alert("Yout can't repeate a name");
     }
   },
-  mutateUpdateAgenda(state, agendaName) {
+  mutateUpdateAgenda(state, agendaNew) {
     const foudAgendaIndex = state.agendas.findIndex(
-      agenda => agenda.name === agendaName.name
+      agenda => agenda.agendaId === agendaNew.agendaId
     );
-    state.agendas[foudAgendaIndex] = agendaName.agenda;
+    state.agendas[foudAgendaIndex] = agendaNew;
   },
-  mutateDeleteAgenda(state, name) {
-    state.agendas = state.agendas.filter(agenda => agenda.name !== name);
+  mutateDeleteAgenda(state, agendaId) {
+    state.agendas = state.agendas.filter(
+      agenda => agenda.agendaId !== agendaId
+    );
   },
 
   addScheduledAppointment(state, newScheduledAppointment) {

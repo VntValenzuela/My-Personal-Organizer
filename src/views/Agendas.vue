@@ -1,19 +1,22 @@
 <template>
   <div class="agendas">
     <v-container class="my-10" grid-list-md>
-      <h1 id="title">AGENDAS</h1>
-      <br />
-      <v-btn
-        id="create"
-        dark
-        fab
-        middle
-        right
-        color="blue"
-        @click.stop="dialogCreate = true"
-      >
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      <v-row>
+        <h1 id="title">AGENDAS</h1>
+        <v-spacer />
+        <router-link
+          :to="{
+            name: 'Organizer'
+          }"
+          style="text-decoration: none"
+        >
+          <v-btn large>CALENDARY</v-btn>
+        </router-link>
+        <v-spacer />
+        <v-btn id="create" color="blue" @click.stop="dialogCreate = true">
+          NEW AGENDA
+        </v-btn>
+      </v-row>
       <br />
       <br />
       <v-layout row wrap>
@@ -25,42 +28,23 @@
           v-for="(agenda, index) in agendas"
           :key="index"
         >
-          <v-card class="mx-auto" max-width="250">
-            <router-link
-              :to="{
-                name: 'Organizer'
-              }"
-            >
-              <v-card-title>
-                <div class="subheading">{{ agenda.name }}</div>
-              </v-card-title>
-              <v-card-subtitle>
-                <div class="grey--text">{{ agenda.description }}</div>
-              </v-card-subtitle>
-              <v-card-text>
-                <div class="grey--text">
-                  {{ agenda.start }} - {{ agenda.end }}
-                </div>
-              </v-card-text>
-            </router-link>
-            <v-container center>
-              <v-btn
-                id="update"
-                color="blue"
-                @click.stop="
-                  openUpdateDialog(agenda);
-                  dialogUpdate = true;
-                "
-                >Update</v-btn
-              >
-              <v-btn
-                id="delete"
-                color="red"
-                v-if="agenda.appointments.length == 0"
-                @click.stop="openDeleteDialog(agenda)"
-                >Detele</v-btn
-              >
-            </v-container>
+          <v-card
+            id="update"
+            class="mx-auto"
+            max-width="250"
+            @click.stop="openUpdateDeleteDialog(agenda)"
+          >
+            <v-card-title>
+              <div class="subheading">{{ agenda.name }}</div>
+            </v-card-title>
+            <v-card-subtitle>
+              <div class="grey--text">{{ agenda.description }}</div>
+            </v-card-subtitle>
+            <v-card-text>
+              <div class="grey--text">
+                {{ agenda.start }} - {{ agenda.end }}
+              </div>
+            </v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
@@ -70,14 +54,10 @@
       v-model="dialogCreate"
       @creaagenda="creaagenda"
     />
-    <updateAgendaDialog
-      ref="updateDialog"
-      v-model="dialogUpdate"
+    <updateDeleteAgendaDialog
+      ref="updateDeleteDialog"
+      v-model="dialogUpdateDelete"
       @updaagenda="updaagenda"
-    />
-    <deleteAgendaDialog
-      ref="deleteDialog"
-      v-model="dialogDelete"
       @deleagenda="deleagenda"
     />
   </div>
@@ -85,22 +65,19 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import deleteAgendaDialog from "../components/DeleteAgenda.vue";
-import updateAgendaDialog from "../components/UpdateAgenda.vue";
+import updateDeleteAgendaDialog from "../components/UpdateDeleteAgenda.vue";
 import createAgendaDialog from "../components/CreateAgenda.vue";
 
 export default {
   name: "Agendas",
   components: {
     createAgendaDialog,
-    updateAgendaDialog,
-    deleteAgendaDialog
+    updateDeleteAgendaDialog
   },
   data() {
     return {
       dialogCreate: false,
-      dialogDelete: false,
-      dialogUpdate: false
+      dialogUpdateDelete: false
     };
   },
   computed: {
@@ -114,11 +91,12 @@ export default {
     creaagenda(agenda) {
       this.createAgenda(agenda);
     },
-    updaagenda(agendaName) {
-      this.updateAgenda(agendaName);
+    updaagenda(agenda) {
+      this.updateAgenda(agenda);
     },
-    deleagenda(name) {
-      this.deleteAgenda(name);
+    deleagenda(agendaId) {
+      console.log("putooo");
+      this.deleteAgenda(agendaId);
     },
     closeCreate() {
       this.dialogDelete = false;
@@ -126,15 +104,9 @@ export default {
     closeUpdate() {
       this.dialogDelete = false;
     },
-    closeDelete() {
-      this.dialogDelete = false;
-    },
-    openUpdateDialog(agenda) {
-      this.$refs.updateDialog.setAgenda(agenda);
-    },
-    openDeleteDialog(agenda) {
-      this.$refs.deleteDialog.setName(agenda.name);
-      this.dialogDelete = true;
+    openUpdateDeleteDialog(agenda) {
+      this.$refs.updateDeleteDialog.setAgenda(agenda);
+      this.dialogUpdateDelete = true;
     }
   }
 };
