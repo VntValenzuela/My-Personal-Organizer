@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="645px">
+  <v-dialog v-model="show" persistent max-width="550px">
     <v-card>
       <v-col cols="12">
         <v-text-field v-model="name" label="Name" required></v-text-field>
@@ -12,12 +12,10 @@
       <v-container text-xs-center>
         <v-row>
           <v-col>
-            <div class="grey--text" text-xs-center>Start</div>
-            <v-time-picker v-model="start"></v-time-picker>
+            <v-time-picker v-model="start" width="220">Start</v-time-picker>
           </v-col>
           <v-col>
-            <div class="grey--text">End</div>
-            <v-time-picker v-model="end"></v-time-picker>
+            <v-time-picker v-model="end" width="220">End</v-time-picker>
           </v-col>
         </v-row>
       </v-container>
@@ -26,6 +24,7 @@
         <v-btn color="blue darken-1" text @click.stop="show = false"
           >Cancel</v-btn
         >
+        <v-spacer />
         <v-btn
           color="blue darken-1"
           text
@@ -54,10 +53,12 @@ export default {
   methods: {
     creaagenda() {
       this.$emit("creaagenda", {
+        agendaId: "",
         name: this.name,
         description: this.description,
         start: this.start,
         end: this.end,
+        color: "",
         appointments: []
       });
     },
