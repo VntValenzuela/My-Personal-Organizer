@@ -25,7 +25,11 @@ export default {
   //PARTICIPANTS
   mutateRegisterParticipant(state, newParticipant) {
     var existingParticipant = false;
-    if (newParticipant.name !== "" || newParticipant.contactNumber < 1000000) {
+    if (
+      newParticipant.name !== "" ||
+      newParticipant.contactNumber < 1000000 ||
+      newParticipant.gender !== ""
+    ) {
       state.participants.forEach(participant => {
         if (participant.name === newParticipant.name) {
           existingParticipant = true;

@@ -7,7 +7,7 @@
         id="register"
         dark
         color="#D2691E"
-        @click.stop="registerForm = true"
+        @click.stop="openRegisterParticipantDialog()"
       >
         REGISTER
         <v-icon>mdi-plus</v-icon>
@@ -23,7 +23,7 @@
           v-for="(participant, index) in participants"
           :key="index"
         >
-          <v-card class="text-center" max-width="250" color="#F5F5F5">
+          <v-card class="text-center" max-width="250" color="#DFE1E5">
             <v-container>
               <v-img
                 v-if="participant.gender === 'Male'"
@@ -33,7 +33,6 @@
               <v-img
                 v-if="participant.gender === 'Female'"
                 src="../assets/female.png"
-                position="center"
                 class="grey darken-4"
               ></v-img>
               <!-- <v-icon light :size="60" right>mdi-account-circle</v-icon> -->
@@ -42,28 +41,27 @@
               <div class="text-center">{{ participant.name }}</div>
             </v-card-title>
             <v-card-subtitle>
-              <div class="grey--text">{{ participant.contactNumber }}</div>
+              <div>{{ participant.contactNumber }}</div>
             </v-card-subtitle>
             <v-container center>
               <v-btn
                 class="ma-2"
                 id="update"
-                color="blue"
+                color="#DAA520"
                 :rounded="true"
                 @click.stop="
-                  (updateForm = true), (selectedId = participant.participantID)
+                  openUpdateParticipantDialog(participant.participantId)
                 "
                 >Update</v-btn
               >
               <v-btn
                 class="ma-2"
                 id="delete"
-                color="red"
+                color="#E23C3C"
                 :rounded="true"
                 v-if="participant.upcomingAppointments.length === 0"
                 @click.stop="
-                  (deleteOption = true),
-                    (selectedId = participant.participantID)
+                  openDeleteParticipantDialog(participant.participantId)
                 "
                 >Delete</v-btn
               >
@@ -72,12 +70,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <participant
-      :dialog-register="registerForm"
-      :dialog-update="updateForm"
-      :dialog-delete="deleteOption"
-      :selected-participant="selectedId"
-    />
+    <participant ref="participantDialogs" />
   </div>
 </template>
 <script>
@@ -93,14 +86,25 @@ export default {
     return {
       registerForm: false,
       updateForm: false,
-      deleteOption: false,
-      selectedId: 0
+      deleteForm: false,
+      selectedId: 1
     };
   },
   computed: {
     ...mapGetters(["getParticipants"]),
     participants() {
       return this.getParticipants;
+    }
+  },
+  methods: {
+    openRegisterParticipantDialog() {
+      this.$refs.participantDialogs.openRegister();
+    },
+    openUpdateParticipantDialog(participantId) {
+      this.$refs.participantDialogs.openUpdate(participantId);
+    },
+    openDeleteParticipantDialog(participantId) {
+      this.$refs.participantDialogs.openDelete(participantId);
     }
   }
 };

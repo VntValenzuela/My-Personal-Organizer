@@ -44,11 +44,11 @@ describe("Participants CRUD methods.", () => {
     wrapper.vm.$data.participantId = 5;
     wrapper.vm.$data.name = "Vanessa Bustillos";
     wrapper.vm.$data.contactNumber = 67427046;
-
+    wrapper.vm.$data.gender = "Female";
     wrapper.vm._registerParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
   });
-/*  it("Selecting a participant from global participants list works correctly.", () => {
+  /*it("Selecting a participant from global participants list works correctly.", () => {
     const wrapper = mount(Participant, {
       store,
       vuetify,
@@ -73,7 +73,7 @@ describe("Participants CRUD methods.", () => {
     //If all fields are valid
     wrapper.vm.$data.name = "Vanessa Bustillos";
     wrapper.vm.$data.contactNumber = 67412346;
-
+    wrapper.vm.$data.gender = "Female";
     wrapper.vm._registerParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
   });
@@ -83,17 +83,17 @@ describe("Participants CRUD methods.", () => {
       vuetify,
       localVue
     });
-    let participantId = 3;
+    let participantId = wrapper.vm.$store.state.participants[0].participantId;
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength;
     const expectedContactNumber = wrapper.vm.$store.state.participants.find(
       participant => participant.participantId === participantId
     ).contactNumber;
     //If all fields are valid
-    wrapper.vm.$data.selectedParticipant = 3;
-    wrapper.vm.$data.name = "Paola Canedo";
+    wrapper.vm.$data.selectedParticipant = participantId;
+    wrapper.vm.$data.name = "Juan Torrez";
     wrapper.vm.$data.contactNumber = 72740037;
-
+    wrapper.vm.$data.gender = "Male";
     wrapper.vm._updateParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
     assert.notEqual(
@@ -115,8 +115,9 @@ describe("Participants CRUD methods.", () => {
     });
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength - 1;
+    let selectedId = wrapper.vm.$store.state.participants[2].participantId;
     //If all fields are valid
-    wrapper.vm.$data.selectedParticipant = 4;
+    wrapper.vm.$data.selectedParticipant = selectedId;
 
     wrapper.vm._deleteParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);

@@ -1,52 +1,51 @@
 <template>
   <div>
-    <v-dialog v-model="dialogRegister" persistent max-width="645px">
+    <v-dialog v-model="dialogRegister" max-width="645px">
       <v-card>
         <v-col cols="12">
           <v-text-field
             v-model="name"
             counter
-            maxlength="30"
-            required
+            maxlength="40"
             label="Name"
           ></v-text-field>
           <v-text-field
             v-model="contactNumber"
-            counter="7"
-            required
+            counter="8"
             label="Contact Number"
           ></v-text-field>
-          <v-select
-            v-model="gender"
-            :items="genders"
-            required
-            label="Gender"
-          ></v-select>
+          <v-select v-model="gender" :items="genders" label="Gender"></v-select>
         </v-col>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogRegister = false"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="cancelDelete()"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click.stop="_registerParticipant()"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="_registerParticipant()"
             >Register</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogUpdate" persistent max-width="645px">
+    <v-dialog v-model="dialogUpdate" max-width="645px">
       <v-card>
         <v-col cols="12">
           <v-text-field
             v-model="name"
             counter
-            maxlength="30"
-            required
+            maxlength="40"
             label="New Name"
           ></v-text-field>
           <v-text-field
             v-model="contactNumber"
-            counter="7"
-            required
+            counter="8"
             label="New Contact Number"
           ></v-text-field>
           <v-select
@@ -57,23 +56,39 @@
           ></v-select>
         </v-col>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogUpdate = false"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="cancelUpdate()"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click.stop="_updateParticipant()"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="_updateParticipant()"
             >Update</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogDelete" persistent max-width="500px">
+    <v-dialog v-model="dialogDelete" max-width="500px">
       <v-card>
-        <v-card-title>Please, confirm to delete the participant</v-card-title>
+        <v-card-title> Please, confirm to delete the participant</v-card-title>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogDelete = false"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="cancelDelete()"
             >Cancel</v-btn
           >
-          <v-btn color="blue darken-1" text @click.stop="_deleteParticipant()"
+          <v-btn
+            class="ma-2"
+            outlined
+            color="#4682B4"
+            @click.stop="_deleteParticipant()"
             >Confirm</v-btn
           >
         </v-card-actions>
@@ -86,29 +101,18 @@
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Participant",
-  props: {
-    dialogRegister: {
-      type: Boolean,
-      default: false
-    },
-    dialogUpdate: {
-      type: Boolean,
-      default: false
-    },
-    dialogDelete: {
-      type: Boolean,
-      default: false
-    },
-    selectedParticipant: Number
-  },
   data() {
     return {
       participantId: 0,
       name: "",
       contactNumber: 0,
       upcomingAppointments: [],
+      selectedParticipant: null,
       gender: "",
-      genders: ["Female", "Male"]
+      genders: ["Female", "Male"],
+      dialogUpdate: false,
+      dialogRegister: false,
+      dialogDelete: false
     };
   },
   computed: {
@@ -139,12 +143,12 @@ export default {
           this.registerParticipant({
             participantId: this.participantId,
             name: this.name,
-            contactNumber: parseInt(this.contactNumber),
+            contactNumber: this.contactNumber,
             upcomingAppointments: [],
             gender: this.gender
           });
           this.clearBoxes();
-          //this.dialogRegister = false;
+          this.cancelRegister();
         }
       }
     },
@@ -152,17 +156,19 @@ export default {
       if (this.validateData()) {
         alert("All fields must be filled.");
       } else {
+        console.log(this.selectedParticipant + "uno");
         this.participantList.forEach(participant => {
           if (participant.participantId === this.selectedParticipant) {
+            console.log(this.selectedParticipant + "dos");
             this.updateParticipant({
               participantId: participant.participantId,
               name: this.name,
-              contactNumber: parseInt(this.contactNumber),
+              contactNumber: this.contactNumber,
               upcomingAppointments: [],
               gender: this.gender
             });
             this.clearBoxes();
-            //this.dialogUpdate = false;
+            this.cancelUpdate();
           }
         });
       }
@@ -171,8 +177,12 @@ export default {
       this.participantList.forEach(participant => {
         if (participant.participantId === this.selectedParticipant) {
           if (participant.upcomingAppointments.length === 0) {
+            console.log(
+              this.selectedParticipant,
+              participant.upcomingAppointments.length
+            );
             this.deleteParticipant(participant);
-            this.dialogDelete = false;
+            this.cancelDelete();
           } else {
             alert(
               "The participant has upcoming appointments, it can't be removed."
@@ -187,7 +197,7 @@ export default {
         this.contactNumber < 1000000 ||
         this.gender === ""
       ) {
-        return;
+        return true;
       }
     },
     getId() {
@@ -199,6 +209,29 @@ export default {
       this.name = "";
       this.contactNumber = 0;
       this.gender = "";
+    },
+    cancelRegister() {
+      this.selectedParticipant = null;
+      this.dialogRegister = false;
+    },
+    cancelUpdate() {
+      this.selectedParticipant = null;
+      this.dialogUpdate = false;
+    },
+    cancelDelete() {
+      this.selectedParticipant = null;
+      this.dialogDelete = false;
+    },
+    openRegister() {
+      this.dialogUpdate = true;
+    },
+    openUpdate(participantId) {
+      this.selectedParticipant = participantId;
+      this.dialogUpdate = true;
+    },
+    openDelete(participantId) {
+      this.selectedParticipant = participantId;
+      this.dialogDelete = true;
     }
   }
 };
