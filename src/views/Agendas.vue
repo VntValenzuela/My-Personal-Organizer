@@ -13,7 +13,7 @@
           <v-btn large>CALENDARY</v-btn>
         </router-link>
         <v-spacer />
-        <v-btn id="create" color="blue" @click.stop="dialogCreate = true">
+        <v-btn large id="create" color="blue" @click.stop="dialogCreate = true">
           NEW AGENDA
         </v-btn>
       </v-row>
@@ -30,18 +30,26 @@
         >
           <v-card
             id="update"
+            :style="{ backgroundColor: agenda.color }"
             class="mx-auto"
             max-width="250"
             @click.stop="openUpdateDeleteDialog(agenda)"
           >
             <v-card-title>
-              <div class="subheading">{{ agenda.name }}</div>
+              <div
+                class="subheading"
+                :style="{ color: getContrastYIQ(agenda.color) }"
+              >
+                {{ agenda.name }}
+              </div>
             </v-card-title>
             <v-card-subtitle>
-              <div class="grey--text">{{ agenda.description }}</div>
+              <div :style="{ color: getContrastYIQ(agenda.color) }">
+                {{ agenda.description }}
+              </div>
             </v-card-subtitle>
             <v-card-text>
-              <div class="grey--text">
+              <div :style="{ color: getContrastYIQ(agenda.color) }">
                 {{ agenda.start }} - {{ agenda.end }}
               </div>
             </v-card-text>
@@ -95,7 +103,6 @@ export default {
       this.updateAgenda(agenda);
     },
     deleagenda(agendaId) {
-      console.log("putooo");
       this.deleteAgenda(agendaId);
     },
     closeCreate() {
@@ -107,6 +114,14 @@ export default {
     openUpdateDeleteDialog(agenda) {
       this.$refs.updateDeleteDialog.setAgenda(agenda);
       this.dialogUpdateDelete = true;
+    },
+    getContrastYIQ(hexcolor) {
+      hexcolor = hexcolor.slice(1);
+      var r = parseInt(hexcolor.substr(0, 2), 16);
+      var g = parseInt(hexcolor.substr(2, 2), 16);
+      var b = parseInt(hexcolor.substr(4, 2), 16);
+      var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+      return yiq >= 128 ? "black" : "white";
     }
   }
 };

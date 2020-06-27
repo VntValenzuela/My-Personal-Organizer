@@ -12,22 +12,25 @@ export default {
           state.agendas[state.agendas.length - 1].agendaId.split("-")[1]
         ) +
           1);
-      var color = "#";
-      for (var i = 0; i < 6; i++) {
-        var letters = "0123456789ABCDEF";
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      agenda.color = color;
       state.agendas.push(agenda);
     } else {
       alert("Yout can't repeate a name");
     }
   },
   mutateUpdateAgenda(state, agendaNew) {
-    const foudAgendaIndex = state.agendas.findIndex(
-      agenda => agenda.agendaId === agendaNew.agendaId
+    const foudAgendatIndex = state.agendas.findIndex(
+      agendaFind =>
+        agendaFind.name === agendaNew.name &&
+        agendaFind.agendaId !== agendaNew.agendaId
     );
-    state.agendas[foudAgendaIndex] = agendaNew;
+    if (state.agendas[foudAgendatIndex] == null) {
+      const foudAgendaIndex2 = state.agendas.findIndex(
+        agenda => agenda.agendaId === agendaNew.agendaId
+      );
+      state.agendas[foudAgendaIndex2] = agendaNew;
+    } else {
+      alert("Yout can't repeate a name");
+    }
   },
   mutateDeleteAgenda(state, agendaId) {
     state.agendas = state.agendas.filter(
