@@ -13,8 +13,25 @@
           <v-btn large>CALENDARY</v-btn>
         </router-link>
         <v-spacer />
-        <v-btn large id="create" color="blue" @click.stop="dialogCreate = true">
+        <v-btn
+          large
+          id="create"
+          class="ma-2"
+          color="blue"
+          @click.stop="dialogCreate = true"
+        >
           NEW AGENDA
+        </v-btn>
+        <v-btn
+          id="redirectToParticipants"
+          class="ma-2"
+          color="#CD853F"
+          dark
+          large
+          @click.stop="redirectToParticipant()"
+        >
+          Participants
+          <v-icon light :size="30">mdi-account-circle</v-icon>
         </v-btn>
       </v-row>
       <br />
@@ -114,6 +131,9 @@ export default {
     openUpdateDeleteDialog(agenda) {
       this.$refs.updateDeleteDialog.setAgenda(agenda);
       this.dialogUpdateDelete = true;
+    },
+    redirectToParticipant() {
+      this.$router.push("Participant");
     },
     getContrastYIQ(hexcolor) {
       hexcolor = hexcolor.slice(1);

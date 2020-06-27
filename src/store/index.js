@@ -37,6 +37,36 @@ const state = {
       appointments: []
     }
   ],
+  participants: [
+    {
+      participantId: 1,
+      name: "Juan Perez Rocha",
+      contactNumber: 71234567,
+      upcomingAppointments: [],
+      gender: "Male"
+    },
+    {
+      participantId: 2,
+      name: "Andrea Paredes López",
+      contactNumber: 72244661,
+      upcomingAppointments: [],
+      gender: "Female"
+    },
+    {
+      participantId: 3,
+      name: "Fernando Torrez Siles",
+      contactNumber: 73467812,
+      upcomingAppointments: [],
+      gender: "Male"
+    },
+    {
+      participantId: 4,
+      name: "Carla Andrade Rojas",
+      contactNumber: 79983812,
+      upcomingAppointments: [],
+      gender: "Female"
+    }
+  ],
   scheduledAppointments: [
     {
       id: "SAP-0001",
@@ -80,13 +110,6 @@ const state = {
       endHour: "11:00",
       agendaId: "A-1",
       participants: ["PART-001"]
-    }
-  ],
-  participants: [
-    {
-      participantId: "PART-001",
-      name: "Person A",
-      contactNumber: "70710101"
     }
   ]
 };

@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Agendas from "../views/Agendas.vue";
 import Organizer from "../views/Organizer.vue";
+import ParticipantView from "../views/Participant.vue";
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,11 @@ const routes = [
     path: "/organizer",
     name: "Organizer",
     component: Organizer
+  },
+  {
+    path: "/participant",
+    name: "Participant",
+    component: ParticipantView
   },
   {
     path: "/about",
