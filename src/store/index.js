@@ -15,7 +15,7 @@ const state = {
       description: "my agenda for work",
       start: "8:30",
       end: "18:30",
-      color: "#A00CFF",
+      color: "#4DB6AC",
       appointments: ["not-null"]
     },
     {
@@ -24,7 +24,7 @@ const state = {
       description: "my agenda for my things",
       start: "18:30",
       end: "21:30",
-      color: "#F000F0",
+      color: "#FFEA00",
       appointments: []
     },
     {
@@ -33,7 +33,7 @@ const state = {
       description: "for entertainment",
       start: "11:30",
       end: "14:30",
-      color: "#0000FF",
+      color: "#90A4AE",
       appointments: []
     }
   ],
