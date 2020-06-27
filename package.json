@@ -14,7 +14,6 @@
     "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vue-swatches": "^2.1.0",
     "vue-textarea-autosize": "^1.1.1",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0"
