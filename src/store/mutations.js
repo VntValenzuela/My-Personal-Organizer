@@ -7,19 +7,36 @@ export default {
       agendaFind => agendaFind.name === agenda.name
     );
     if (state.agendas[foudAgendatIndex] == null) {
+      agenda.agendaId =
+        "A-" +
+        (Number(
+          state.agendas[state.agendas.length - 1].agendaId.split("-")[1]
+        ) +
+          1);
       state.agendas.push(agenda);
     } else {
       alert("Yout can't repeate a name");
     }
   },
-  mutateUpdateAgenda(state, agendaName) {
-    const foudAgendaIndex = state.agendas.findIndex(
-      agenda => agenda.name === agendaName.name
+  mutateUpdateAgenda(state, agendaNew) {
+    const foudAgendatIndex = state.agendas.findIndex(
+      agendaFind =>
+        agendaFind.name === agendaNew.name &&
+        agendaFind.agendaId !== agendaNew.agendaId
     );
-    state.agendas[foudAgendaIndex] = agendaName.agenda;
+    if (state.agendas[foudAgendatIndex] == null) {
+      const foudAgendaIndex2 = state.agendas.findIndex(
+        agenda => agenda.agendaId === agendaNew.agendaId
+      );
+      state.agendas[foudAgendaIndex2] = agendaNew;
+    } else {
+      alert("Yout can't repeate a name");
+    }
   },
-  mutateDeleteAgenda(state, name) {
-    state.agendas = state.agendas.filter(agenda => agenda.name !== name);
+  mutateDeleteAgenda(state, agendaId) {
+    state.agendas = state.agendas.filter(
+      agenda => agenda.agendaId !== agendaId
+    );
   },
 
   //PARTICIPANTS
@@ -86,7 +103,11 @@ export default {
         scheduledAppointment.id === updatedScheduledAppointment.id
     );
     if (updateIndex >= 0) {
-      state.scheduledAppointments[updateIndex] = updatedScheduledAppointment;
+      state.scheduledAppointments.splice(
+        updateIndex,
+        1,
+        updatedScheduledAppointment
+      );
     }
   }
 };

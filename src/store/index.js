@@ -10,27 +10,30 @@ Vue.use(Vuex);
 const state = {
   agendas: [
     {
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       name: "Work",
       description: "my agenda for work",
-      start: "8:30",
+      start: "08:30",
       end: "18:30",
+      color: "#4DB6AC",
       appointments: ["not-null"]
     },
     {
-      agendaId: "ANG-0002",
+      agendaId: "A-2",
       name: "Personal",
       description: "my agenda for my things",
       start: "18:30",
       end: "21:30",
+      color: "#FFEA00",
       appointments: []
     },
     {
-      agendaId: "ANG-0003",
+      agendaId: "A-3",
       name: "Entertainment",
       description: "for entertainment",
       start: "11:30",
       end: "14:30",
+      color: "#90A4AE",
       appointments: []
     }
   ],
@@ -72,7 +75,7 @@ const state = {
       date: "2020-06-22",
       startHour: "10:00",
       endHour: "11:00",
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       participants: ["PART-001", "PART-002"]
     },
     {
@@ -82,7 +85,7 @@ const state = {
       date: "2020-06-23",
       startHour: "22:00",
       endHour: "23:00",
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       participants: []
     }
   ],
@@ -93,7 +96,7 @@ const state = {
       // date: "06/18/2020"
       // startHour: "10:00",
       // endHour: "11:00",
-      // agendaId: "ANG-001"
+      // agendaId: "A-1"
     }
   ],
   recursiveAppointments: [
@@ -105,7 +108,7 @@ const state = {
       frequency: "Day|Week|Month",
       startHour: "10:00",
       endHour: "11:00",
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       participants: ["PART-001"]
     }
   ]

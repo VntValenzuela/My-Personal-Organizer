@@ -156,10 +156,8 @@ export default {
       if (this.validateData()) {
         alert("All fields must be filled.");
       } else {
-        console.log(this.selectedParticipant + "uno");
         this.participantList.forEach(participant => {
           if (participant.participantId === this.selectedParticipant) {
-            console.log(this.selectedParticipant + "dos");
             this.updateParticipant({
               participantId: participant.participantId,
               name: this.name,
@@ -223,7 +221,7 @@ export default {
       this.dialogDelete = false;
     },
     openRegister() {
-      this.dialogUpdate = true;
+      this.dialogRegister = true;
     },
     openUpdate(participantId) {
       this.selectedParticipant = participantId;
