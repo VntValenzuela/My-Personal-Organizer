@@ -77,28 +77,15 @@
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
             <v-toolbar :color="selectedEvent.color" dark>
-              <v-btn @click="deleteEvent(selectedEvent.id)" icon>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
               <v-btn @click="deleteScheduledAppointment(selectedEvent.id)" icon>
-                <v-icon color="blue darken-2">mdi-delete</v-icon>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
             </v-toolbar>
             <v-card-text>
-              <form v-if="currentlyEditing !== selectedEvent.id">
-                {{ selectedEvent.description }}
-              </form>
-              <form v-else>
-                <textarea-autosize
-                  v-model="selectedEvent.description"
-                  type="text"
-                  style="width: 100%"
-                  :min-height="100"
-                  placeholder="add note"
-                ></textarea-autosize>
-              </form>
+              <p>{{ selectedEvent.description }}</p>
+              <p>{{ selectedEvent.startHour }} - {{ selectedEvent.endHour }}</p>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
@@ -106,16 +93,10 @@
               </v-btn>
               <v-btn
                 text
-                v-if="currentlyEditing !== selectedEvent.id"
-                @click.prevent="editEvent(selectedEvent)"
+                color="secondary"
+                @click="sendData(selectedEvent, false)"
               >
                 Edit
-              </v-btn>
-              <v-btn text v-else @click.prevent="updateEvent(selectedEvent)">
-                Save
-              </v-btn>
-              <v-btn small @click="sendData(selectedEvent, false)">
-                UPDATE
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -186,6 +167,7 @@ export default {
       return this.getAgendas;
     },
     events() {
+      //console.log("CALENDAR -> events Changed");
       return this.getScheduledAppointments.map(appointment => {
         return {
           ...appointment,
@@ -255,20 +237,28 @@ export default {
       this.selectedOpen = false;
     },
     sendData(selectedAppointment, newAppointment) {
-      console.log(`CALENDAR-> Sending data`);
+      //console.log(`CALENDAR-> Sending data`);
       if (newAppointment) {
         this.selectedAppointment = {};
-        console.log(
+        /*console.log(
           `CALENDAR-> New ${JSON.stringify(this.selectedAppointment)}`
-        );
+        );*/
       } else {
         this.selectedAppointment = selectedAppointment;
-        console.log(
+        /*console.log(
           `CALENDAR-> New ${JSON.stringify(this.selectedAppointment)}`
-        );
+        );*/
       }
       this.newAppointment = newAppointment;
       this.dialog = true;
+    }
+  },
+  watch: {
+    appointments: {
+      deep: true,
+      handler() {
+        console.log("CALENDAR -> events Changed");
+      }
     }
   }
 };

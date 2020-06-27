@@ -53,7 +53,11 @@ export default {
         scheduledAppointment.id === updatedScheduledAppointment.id
     );
     if (updateIndex >= 0) {
-      state.scheduledAppointments[updateIndex] = updatedScheduledAppointment;
+      state.scheduledAppointments.splice(
+        updateIndex,
+        1,
+        updatedScheduledAppointment
+      );
     }
   }
 };

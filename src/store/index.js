@@ -13,7 +13,7 @@ const state = {
       agendaId: "A-1",
       name: "Work",
       description: "my agenda for work",
-      start: "8:30",
+      start: "08:30",
       end: "18:30",
       color: "#4DB6AC",
       appointments: ["not-null"]

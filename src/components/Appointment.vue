@@ -3,23 +3,28 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-container>
-          <v-form ref="form">
+          <v-form ref="form" v-model="valid">
             <v-text-field
               v-model="appointment.name"
               autocomplete="off"
               label="Appointment Name"
+              :rules="[required('Name')]"
             >
             </v-text-field>
             <v-text-field
               v-model="appointment.description"
               autocomplete="off"
               label="Description"
+              :rules="[required('Description')]"
             >
             </v-text-field>
             <v-select
-              v-model="appointment.agendaID"
-              :items="agendasNames"
+              v-model="appointment.agendaId"
+              :items="agendas"
+              item-text="name"
+              item-value="agendaId"
               label="Choose an Agenda"
+              :rules="[required('Agenda')]"
             ></v-select>
             <v-menu
               v-model="menu0"
@@ -37,6 +42,7 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  :rules="[required('Date')]"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -65,6 +71,11 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  :rules="[
+                    required('Start Hour'),
+                    higherAgenda('Starting'),
+                    lowerAgenda('Starting')
+                  ]"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -93,6 +104,12 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  :rules="[
+                    required('Ending Hour'),
+                    higher(),
+                    higherAgenda('Ending'),
+                    lowerAgenda('Ending')
+                  ]"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -105,13 +122,19 @@
             </v-menu>
             <v-select
               v-model="appointment.participants"
-              :items="participants"
+              :items="participantsNames"
+              multiple
+              append-icon="mdi-plus"
               label="Select participants"
             ></v-select>
             <v-btn color="primary" class="mr-4" @click.stop="reset"
               >CLOSE
             </v-btn>
-            <v-btn color="primary" class="mr-4" @click.stop="dispatchAction"
+            <v-btn
+              color="primary"
+              class="mr-4"
+              @click.stop="dispatchAction"
+              :disabled="!valid"
               >{{ newAppointment ? "SAVE" : "UPDATE" }}
             </v-btn>
           </v-form>
@@ -132,7 +155,39 @@ export default {
       time: null,
       menu0: false,
       menu1: false,
-      menu2: false
+      menu2: false,
+      valid: false,
+      required(propertyType) {
+        return value =>
+          (value && (value + "").length > 0) || `${propertyType} is required`;
+      },
+      higher() {
+        return value =>
+          value >= this.appointment.startHour ||
+          `Ending Hour must be higher than Starting hour`;
+      },
+      higherAgenda(propertyType) {
+        let agenda = {};
+        let msg = "Select a Agenda for this Appointment";
+        if (typeof this.appointment.agendaId === "string") {
+          agenda = this.agendas.find(
+            agenda => agenda.agendaId === this.appointment.agendaId
+          );
+          msg = `${propertyType} Hour must be higher than Agenda Starting hour ${agenda.start}`;
+        }
+        return value => value >= agenda.start || msg;
+      },
+      lowerAgenda(propertyType) {
+        let agenda = {};
+        let msg = "Select a Agenda for this Appointment";
+        if (typeof this.appointment.agendaId === "string") {
+          agenda = this.agendas.find(
+            agenda => agenda.agendaId === this.appointment.agendaId
+          );
+          msg = `${propertyType} Hour must be lower than Agenda Ending hour ${agenda.end}`;
+        }
+        return value => value <= agenda.end || msg;
+      }
     };
   },
   props: {
@@ -150,7 +205,7 @@ export default {
           date: null,
           startHour: null,
           endHour: null,
-          agendaID: null,
+          agendaId: null,
           participants: []
         };
       }
@@ -180,16 +235,15 @@ export default {
       const agendasNames = this.agendas.map(agenda => agenda.name);
       return defaultArray.concat(agendasNames);
     },
+    participantsNames() {
+      return this.participants.map(participant => participant.name);
+    },
     appointment() {
-      console.log(
+      /*console.log(
         `APPOINTMENT-> Change ${JSON.stringify(this.selectedAppointment)}`
-      );
+      );*/
       return Object.assign({}, this.selectedAppointment);
-    } /*,
-    dialogProp() {
-      console.log(`APPOINTMENT-> Dialog change ${this.dialog}`);
-      return this.dialog;
-    }*/
+    }
   },
   methods: {
     addScheduledAppointment() {
@@ -213,14 +267,16 @@ export default {
       }
     },
     dispatchAction() {
-      if (this.newAppointment) {
-        this.generateNewId();
-        this.$store.dispatch("addScheduledAppointment", this.appointment);
-        console.log("sending appointment");
-      } else {
-        this.$store.dispatch("updateScheduledAppointment", this.appointment);
+      if (this.$refs.form.validate()) {
+        if (this.newAppointment) {
+          this.generateNewId();
+          this.$store.dispatch("addScheduledAppointment", this.appointment);
+          //console.log("sending appointment");
+        } else {
+          this.$store.dispatch("updateScheduledAppointment", this.appointment);
+        }
+        this.reset();
       }
-      this.reset();
     },
     reset() {
       //this.$refs.form.reset();
