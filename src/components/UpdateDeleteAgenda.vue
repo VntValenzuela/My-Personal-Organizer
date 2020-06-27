@@ -40,13 +40,15 @@
       <v-card-actions>
         <v-btn color="gray darken-1" @click.stop="show = false">CANCEL</v-btn>
         <v-spacer />
-        <v-btn color="blue darken-1" @click.stop="updaagenda()">UPDATE</v-btn>
+        <v-btn color="blue darken-1" @click.stop="updaagenda()"
+          >UPDATE<v-icon>mdi-wrench</v-icon></v-btn
+        >
         <v-spacer />
         <v-btn
           color="red darken-1"
           :disabled="this.appointments.length != 0"
           @click.stop="deleagenda()"
-          >DELETE</v-btn
+          >DELETE<v-icon>mdi-delete</v-icon></v-btn
         >
       </v-card-actions>
     </v-card>
@@ -74,7 +76,7 @@ export default {
     updaagenda() {
       if (this.name !== "") {
         if (this.description !== "") {
-          if (this.start !== this.end) {
+          if (this.start < this.end) {
             this.$emit("updaagenda", {
               agendaId: this.agendaId,
               name: this.name,
@@ -84,9 +86,9 @@ export default {
               color: this.color,
               appointments: this.appointments
             });
-            this.show = false;
+            this.closeDialog();
           } else {
-            alert("Hour range is 0");
+            alert("Hour range invalide");
           }
         } else {
           alert("Description can't be empty");
@@ -96,11 +98,14 @@ export default {
       }
     },
     deleagenda() {
-      this.$emit("deleagenda", this.agendaId);
-      this.show = false;
+      this.$emit("deleagenda", {
+        agendaId: this.agendaId,
+        appointments: this.appointments
+      });
     },
     closeDialog() {
       this.$emit("close-update");
+      this.show = false;
     },
     setAgenda(agenda) {
       this.agendaId = agenda.agendaId;

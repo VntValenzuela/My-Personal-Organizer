@@ -48,28 +48,42 @@ describe("Agenda Module", () => {
       vuetify,
       localVue
     });
+
     let expectedLength = 3;
+    let expectedAgendaId = "A-3";
     const agendas = wrapper.vm.agendas;
     wrapper.vm.creaagenda({
+      agendaId: "",
       name: "Work",
-      description: "newAgenda description",
+      description: "work description",
       start: "10:30",
       end: "12:30",
+      color: "#4DB6AC",
       appointments: []
     });
+    assert.equal(agendas[agendas.length - 1].agendaId, expectedAgendaId);
     assert.equal(agendas.length, expectedLength);
+
     expectedLength = 4;
+    expectedAgendaId = "A-4";
     wrapper.vm.creaagenda({
+      agendaId: "",
       name: "newAgenda",
       description: "newAgenda description",
       start: "10:30",
       end: "12:30",
+      color: "#4DB6AC",
       appointments: []
     });
     assert.equal(agendas.length, expectedLength);
+    assert.equal(agendas[agendas.length - 1].agendaId, expectedAgendaId);
   });
-  /*
-  it("Don't delete agenda with appointments", () => {
+
+  it("Don't delete agendas with appointments", () => {
+    global.alert = message => {
+      console.log(message);
+    };
+
     const localVue = createLocalVue();
 
     localVue.use(Vuex);
@@ -86,9 +100,6 @@ describe("Agenda Module", () => {
         }
       ]
     });
-    global.alert = message => {
-      console.log(message);
-    };
 
     const store = new Vuex.Store({
       state: mockAgendaState,
@@ -104,12 +115,13 @@ describe("Agenda Module", () => {
       vuetify,
       localVue
     });
+
     let expectedLength = 4;
-    const agendas = wrapper.vm.agendas;
-    wrapper.vm.deleagenda("Work");
-    assert.equal(agendas.length, expectedLength);
+    wrapper.vm.deleagenda("A-1");
+    assert.equal(wrapper.vm.agendas.length, expectedLength);
+
     expectedLength = 3;
-    wrapper.vm.deleagenda("Personal");
-    assert.equal(agendas.length, expectedLength);
-  });*/
+    wrapper.vm.deleagenda("A-2");
+    assert.equal(wrapper.vm.agendas.length, expectedLength);
+  });
 });

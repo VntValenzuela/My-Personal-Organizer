@@ -16,7 +16,7 @@ const state = {
       start: "08:30",
       end: "18:30",
       color: "#4DB6AC",
-      appointments: ["not-null"]
+      appointments: ["not-null", "nor-null"]
     },
     {
       agendaId: "A-2",
