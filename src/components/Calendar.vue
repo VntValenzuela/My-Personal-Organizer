@@ -30,6 +30,9 @@
           <v-toolbar-title v-if="$refs.calendar">
             {{ $refs.calendar.title }}
           </v-toolbar-title>
+          <v-btn color="primary" class="PostList" dark @click="PostList()">
+            Postpone List
+          </v-btn>
           <v-spacer></v-spacer>
           <v-menu bottom right>
             <template v-slot:activator="{ on, attrs }">
@@ -187,6 +190,9 @@ export default {
     deleteEvent() {}, //Falta implementar
     addEvent() {}, // Falta implentar
 
+    PostList() {
+      this.$router.push("/postponeList");
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
