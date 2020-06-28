@@ -1,16 +1,12 @@
 <template>
   <div>
-    <v-app-bar app flat color="white" clipped-left>
+    <v-app-bar app flat color="white" clipped-left height="50">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-btn
-        color="primary"
-        class="mr-4"
-        dark
-        @click="sendData(selectedAppointment, true)"
-      >
-        New Event
-      </v-btn>
-      <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+      <img class="mr-3" :src="require('../assets/Calendar.png')" height="40" />
+      <v-toolbar-title>
+        Calendar
+      </v-toolbar-title>
+      <v-btn outlined class="ms-4 " color="grey darken-2" @click="setToday">
         Today
       </v-btn>
       <v-btn fab text small color="grey darken-2" @click="prev">
@@ -47,8 +43,50 @@
       </v-menu>
     </v-app-bar>
     <v-navigation-drawer app v-model="drawer" clipped>
+      <v-btn
+        dark
+        rounded
+        large
+        color="white"
+        class="black--text"
+        @click="sendData(selectedAppointment, true)"
+      >
+        <v-icon large color="light-blue" left>mdi-plus</v-icon> Create
+      </v-btn>
+      <v-list dense>
+        <v-list-item link @click="redirectToView('')">
+          <v-list-item-action>
+            <v-icon>mdi-notebook-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Agendas
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link @click="redirectToView('/participant')">
+          <v-list-item-action>
+            <v-icon>mdi-account-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Participants
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link @click="redirectToView('postponeList')">
+          <v-list-item-action>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              PostponeList
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-subheader>Agendas</v-subheader>
       <v-list flat>
-        <v-subheader>Agendas</v-subheader>
         <v-list-item-group v-model="selectedAgendas" multiple color="indigo">
           <v-list-item v-for="agenda in agendas" :key="agenda.id">
             <template v-slot:default="{ active }">
@@ -92,6 +130,7 @@
                 :close-on-content-click="false"
                 :activator="selectedElement"
                 offset-x
+                offset-y
               >
                 <v-card color="grey lighten-4" min-width="350px" flat>
                   <v-toolbar :color="selectedEvent.color" dark>
@@ -108,14 +147,13 @@
                     >
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
-                    <v-spacer></v-spacer>
                   </v-toolbar>
                   <v-card-text>
-                    <p>{{ selectedEvent.description }}</p>
-                    <p>
+                    <h3>{{ selectedEvent.description }}</h3>
+                    <h3>
                       {{ selectedEvent.startHour }} -
                       {{ selectedEvent.endHour }}
-                    </p>
+                    </h3>
                   </v-card-text>
                   <v-card-actions>
                     <v-btn text color="secondary" @click="selectedOpen = false">
@@ -126,7 +164,7 @@
                       color="secondary"
                       @click="sendData(selectedEvent, false)"
                     >
-                      Edit
+                      Update
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -314,6 +352,9 @@ export default {
     initSelectedAgendas() {
       const numberOfAgendas = this.getAgendas.length;
       this.selectedAgendas = Array.from(Array(numberOfAgendas).keys());
+    },
+    redirectToView(route) {
+      this.$router.push(`/${route}`);
     }
   },
   watch: {
