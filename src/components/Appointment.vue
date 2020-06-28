@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-container>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="appointment.name"
               autocomplete="off"
@@ -150,7 +150,6 @@ export default {
   name: "Appointment",
   data() {
     return {
-      // dialog: false,
       color: "#1976D2",
       time: null,
       menu0: false,
@@ -239,9 +238,6 @@ export default {
       return this.participants.map(participant => participant.name);
     },
     appointment() {
-      /*console.log(
-        `APPOINTMENT-> Change ${JSON.stringify(this.selectedAppointment)}`
-      );*/
       return Object.assign({}, this.selectedAppointment);
     }
   },
@@ -261,17 +257,11 @@ export default {
       }
       this.appointment.id = `SAP-${newId}`;
     },
-    initializeData() {
-      if (!this.newAppointment) {
-        this.appointment = this.selectedAppointment;
-      }
-    },
     dispatchAction() {
       if (this.$refs.form.validate()) {
         if (this.newAppointment) {
           this.generateNewId();
           this.$store.dispatch("addScheduledAppointment", this.appointment);
-          //console.log("sending appointment");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
@@ -282,9 +272,6 @@ export default {
       //this.$refs.form.reset();
       this.$emit("close");
     }
-  },
-  mounted() {
-    // this.initializeData();
   }
 };
 </script>

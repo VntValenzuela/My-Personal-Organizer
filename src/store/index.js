@@ -83,9 +83,9 @@ const state = {
       name: "Viaje de Negocios",
       description: "Viaje a Argentina",
       date: "2020-06-23",
-      startHour: "22:00",
-      endHour: "23:00",
-      agendaId: "A-1",
+      startHour: "18:30",
+      endHour: "21:00",
+      agendaId: "A-2",
       participants: []
     }
   ],
