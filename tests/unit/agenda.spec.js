@@ -13,15 +13,18 @@ import mutations from "@/store/mutations";
 import getters from "@/store/getters";
 
 describe("Agenda Module", () => {
-  it("Don't create agendas with name repeated", () => {
-    const localVue = createLocalVue();
-
+  let localVue;
+  let vuetify;
+  let store;
+  let router;
+  beforeEach(() => {
+    localVue = createLocalVue();
     localVue.use(Vuex);
     localVue.use(Vuetify);
     localVue.use(VueRouter);
 
-    const vuetify = new Vuetify();
-    const router = new VueRouter({
+    vuetify = new Vuetify();
+    router = new VueRouter({
       routes: [
         {
           path: "/organizer",
@@ -30,11 +33,8 @@ describe("Agenda Module", () => {
         }
       ]
     });
-    global.alert = message => {
-      console.log(message);
-    };
 
-    const store = new Vuex.Store({
+    store = new Vuex.Store({
       state: mockAgendaState,
       actions,
       mutations,
@@ -42,6 +42,12 @@ describe("Agenda Module", () => {
       modules: {}
     });
 
+    global.alert = message => {
+      console.log(message);
+    };
+  });
+
+  it("Don't create agendas with name repeated", () => {
     const wrapper = mount(Agendas, {
       store,
       router,
@@ -80,35 +86,6 @@ describe("Agenda Module", () => {
   });
 
   it("Don't delete agendas with appointments", () => {
-    global.alert = message => {
-      console.log(message);
-    };
-
-    const localVue = createLocalVue();
-
-    localVue.use(Vuex);
-    localVue.use(Vuetify);
-    localVue.use(VueRouter);
-
-    const vuetify = new Vuetify();
-    const router = new VueRouter({
-      routes: [
-        {
-          path: "/organizer",
-          name: "Organizer",
-          component: Organizer
-        }
-      ]
-    });
-
-    const store = new Vuex.Store({
-      state: mockAgendaState,
-      actions,
-      mutations,
-      getters,
-      modules: {}
-    });
-
     const wrapper = mount(Agendas, {
       store,
       router,
