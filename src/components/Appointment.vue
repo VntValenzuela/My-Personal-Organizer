@@ -53,6 +53,45 @@
                 @input="menu0 = false"
               ></v-date-picker>
             </v-menu>
+            <v-container fluid>
+              <v-switch
+                :label="`Recurrent: ${recurrentToggle.toString()}`"
+                v-model="recurrentToggle"
+              ></v-switch>
+            </v-container>
+            <div id="RecurrentDIV">
+              <v-menu
+                v-model="menu3"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="200px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    append-icon="event"
+                    v-model="appointment.endDate"
+                    label="End Date"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  :no-title="true"
+                  min="2020-06-23"
+                  max="2020-12-31"
+                  v-model="appointment.endDate"
+                @input="menu3 = false"
+                ></v-date-picker>
+              </v-menu>
+              <v-radio-group v-model="active" row>
+                <v-radio label="Daily:" value="daily"></v-radio>
+                <v-radio label="Weekly" value="weekly"></v-radio>
+                <v-radio label="Monthly" value="monthly"></v-radio>
+              </v-radio-group>
+            </div>
             <v-menu
               ref="menu1"
               v-model="menu1"
@@ -133,7 +172,10 @@
             <v-btn
               color="primary"
               class="mr-4"
-              @click.stop="dispatchAction"
+              @click.stop="
+                dispatchAction();
+                addRecurrentEvents();
+              "
               :disabled="!valid"
               >{{ newAppointment ? "SAVE" : "UPDATE" }}
             </v-btn>
@@ -156,7 +198,10 @@ export default {
       menu0: false,
       menu1: false,
       menu2: false,
+      menu3: false,
       valid: false,
+      active: 0,
+      recurrentToggle: false,
       required(propertyType) {
         return value =>
           (value && (value + "").length > 0) || `${propertyType} is required`;
@@ -190,6 +235,17 @@ export default {
       }
     };
   },
+  watch: {
+    recurrentToggle(newValue) {
+      var x = document.getElementById("RecurrentDIV");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+      console.log(newValue);
+    }
+  },
   props: {
     dialog: {
       type: Boolean,
@@ -206,7 +262,8 @@ export default {
           startHour: null,
           endHour: null,
           agendaId: null,
-          participants: []
+          participants: [],
+          recurrentdates: []
         };
       }
     },
@@ -215,6 +272,7 @@ export default {
       default: false
     }
   },
+
   computed: {
     ...mapGetters([
       "getScheduledAppointments",
@@ -269,9 +327,11 @@ export default {
     dispatchAction() {
       if (this.$refs.form.validate()) {
         if (this.newAppointment) {
+          //console.log("New appointment" + this.naddRecurrentEventsewAppointment)
           this.generateNewId();
           this.$store.dispatch("addScheduledAppointment", this.appointment);
-          //console.log("sending appointment");
+         // console.log("sending appointment");
+ 
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
@@ -281,8 +341,73 @@ export default {
     reset() {
       //this.$refs.form.reset();
       this.$emit("close");
+    },
+ // Calcuo de lo eventos reccurentes
+    recurrentevents() {
+      let startDate = new Date(this.appointment.date);
+      let endDate = new Date(this.appointment.endDate);
+      this.recurrentdates = [];
+ // Evento recurrente diario
+      if (this.active === "daily") {
+        let nextOccurrence = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1
+        );
+        while (endDate.getTime() >= nextOccurrence.getTime()) {
+          startDate = nextOccurrence;
+          nextOccurrence = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate() + 1
+          );
+          let date = nextOccurrence.toISOString().substr(0, 10);
+          console.log("Fecha del siguiente appointment: " + date);
+          //Insertando todas la fechas calculadas en un array 
+          this.recurrentdates.push({
+            date
+          });
+          console.log("Lista de fechas" + this.recurrentdates);
+          console.log("Fecha de fin :" + endDate);
+        }
+         // Evento recurrente semanal
+      } else if (this.active === "weekly") {
+        let nextOccurrence = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 7
+        );
+        while (endDate.getTime() >= nextOccurrence.getTime()) {
+          startDate = nextOccurrence;
+          console.log("Fecha del siguiente appointment: " + nextOccurrence);
+          nextOccurrence = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate() + 7
+          );
+          let appointmentnextday = nextOccurrence.toISOString().substr(0, 10);
+          console.log(
+            "Fecha del siguiente appointment 2: " + appointmentnextday
+          );
+          console.log("Fecha de fin :" + endDate);
+          console.log("fecha de inicio :" + startDate);
+        }
+  // Evento recurrente mensual
+      } else if (this.active === "monthly") {
+        console.log("Tercer boton seleccionado");
+      }
+    },
+      //Por cada fecha que hay en el array creo un appointment
+    addRecurrentEvents() {
+       this.recurrentevents();
+       this.recurrentdates.forEach(element => {
+        console.log("Fechas" + element.date);
+        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente (creo)
+       this.dispatchAction();
+      });
     }
   },
+
   mounted() {
     // this.initializeData();
   }
