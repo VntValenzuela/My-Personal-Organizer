@@ -319,6 +319,12 @@ export default {
   watch: {
     selectedAgendas() {
       this.filterEvents();
+    },
+    appointments: {
+      deep: true,
+      handler() {
+        this.filterEvents();
+      }
     }
   }
 };

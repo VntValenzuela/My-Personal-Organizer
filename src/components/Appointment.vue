@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-container>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="appointment.name"
               autocomplete="off"
