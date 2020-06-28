@@ -48,5 +48,27 @@ export default {
       contactNumber: 62707170,
       gender: "Female"
     }
+  ],
+  scheduledAppointments: [
+    {
+      id: "SAP-0001",
+      name: "Dentist",
+      description: "I need to go to dentist",
+      date: "2020-06-22",
+      startHour: "10:00",
+      endHour: "11:00",
+      agendaId: "A-1",
+      participants: ["Valentina Flores Rios", "Carlos Gomez Velarde"]
+    },
+    {
+      id: "SAP-0002",
+      name: "Viaje de Negocios",
+      description: "Viaje a Argentina",
+      date: "2020-06-23",
+      startHour: "22:00",
+      endHour: "23:00",
+      agendaId: "A-1",
+      participants: ["Santiago Fernandez Rios"]
+    }
   ]
 };
