@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { shallowMount, createLocalVue, RouterLinkStub } from "@vue/test-utils";
 
 import Vuex from "vuex";
 import Vuetify from "vuetify";
