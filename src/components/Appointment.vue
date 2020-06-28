@@ -329,7 +329,9 @@ export default {
         if (this.newAppointment) {
           //console.log("New appointment" + this.naddRecurrentEventsewAppointment)
           this.generateNewId();
-          this.$store.dispatch("addScheduledAppointment", this.appointment);
+          const objectToSend = {};
+          Object.assign(objectToSend, this.appointment);
+          this.$store.dispatch("addScheduledAppointment", objectToSend);
          // console.log("sending appointment");
  
         } else {
