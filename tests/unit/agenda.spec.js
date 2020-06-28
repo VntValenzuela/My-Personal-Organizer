@@ -20,7 +20,7 @@ describe("Agenda Module", () => {
   beforeEach(() => {
     localVue = createLocalVue();
     localVue.use(Vuex);
-    localVue.use(Vuetify);
+    //localVue.use(Vuetify);
     localVue.use(VueRouter);
 
     vuetify = new Vuetify();
