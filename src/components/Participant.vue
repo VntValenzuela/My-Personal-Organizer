@@ -21,7 +21,7 @@
             class="ma-2"
             outlined
             color="#4682B4"
-            @click.stop="cancelDelete()"
+            @click.stop="cancelRegister()"
             >Cancel</v-btn
           >
           <v-btn
@@ -116,9 +116,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getParticipants"]),
+    ...mapGetters(["getParticipants", "getScheduledAppointments"]),
     participantList() {
       return this.getParticipants;
+    },
+    scheduledAppointmentsList() {
+      return this.getScheduledAppointments;
     }
   },
   methods: {
@@ -144,7 +147,6 @@ export default {
             participantId: this.participantId,
             name: this.name,
             contactNumber: this.contactNumber,
-            upcomingAppointments: [],
             gender: this.gender
           });
           this.clearBoxes();
@@ -162,7 +164,6 @@ export default {
               participantId: participant.participantId,
               name: this.name,
               contactNumber: this.contactNumber,
-              upcomingAppointments: [],
               gender: this.gender
             });
             this.clearBoxes();
@@ -174,16 +175,12 @@ export default {
     _deleteParticipant() {
       this.participantList.forEach(participant => {
         if (participant.participantId === this.selectedParticipant) {
-          if (participant.upcomingAppointments.length === 0) {
-            console.log(
-              this.selectedParticipant,
-              participant.upcomingAppointments.length
-            );
+          if (this.getAmountUpcomingAppointments() === 0) {
             this.deleteParticipant(participant);
             this.cancelDelete();
           } else {
             alert(
-              "The participant has upcoming appointments, it can't be removed."
+              "The participant can't be removed, it has upcoming appointments. \nPlease, remove the participant from each appointment and try again."
             );
           }
         }
@@ -230,6 +227,18 @@ export default {
     openDelete(participantId) {
       this.selectedParticipant = participantId;
       this.dialogDelete = true;
+    },
+    getAmountUpcomingAppointments() {
+      let amount = 0;
+      this.scheduledAppointmentsList.forEach(appointment => {
+        let participantSelected = this.participantList.find(
+          participant => participant.participantId === this.selectedParticipant
+        );
+        if (appointment.participants.includes(participantSelected.name)) {
+          amount++;
+        }
+      });
+      return amount;
     }
   }
 };

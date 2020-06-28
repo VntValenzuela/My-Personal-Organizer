@@ -167,7 +167,7 @@ export default {
       this.dialogUpdateDelete = true;
     },
     redirectToParticipant() {
-      this.$router.push("Participant");
+      this.$router.push("participant");
     },
     getContrastYIQ(hexcolor) {
       hexcolor = hexcolor.slice(1);

@@ -56,6 +56,17 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          <v-btn
+            id="redirectToHome"
+            class="ma-2"
+            color="#DAA520"
+            fab
+            dark
+            right
+            @click.stop="redirectToHome()"
+          >
+            <v-icon medium>home</v-icon>
+          </v-btn>
         </v-toolbar>
       </v-sheet>
 
@@ -162,7 +173,7 @@ export default {
     ]*/
   }),
   computed: {
-    ...mapGetters(["getScheduledAppointments", "getAgendas"]),
+    ...mapGetters(["getScheduledAppointments", "getAgendas", "getParticipants"]),
     appointments() {
       return this.getScheduledAppointments;
     },
@@ -179,6 +190,9 @@ export default {
           color: "#ff8080"
         };
       });
+    },
+    participants() {
+      return this.getParticipants;
     }
   },
   mounted() {
@@ -257,6 +271,9 @@ export default {
       }
       this.newAppointment = newAppointment;
       this.dialog = true;
+    },
+    redirectToHome() {
+      this.$router.push("/");
     }
   },
   watch: {

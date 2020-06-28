@@ -1,5 +1,19 @@
 <template>
   <div class="participants">
+    <div>
+      <v-btn
+        id="redirectToHome"
+        class="ma-2"
+        color="#DAA520"
+        fab
+        dark
+        fixed
+        right
+        @click.stop="redirectToHome()"
+      >
+        <v-icon medium>home</v-icon>
+      </v-btn>
+    </div>
     <v-container class="my-10" grid-list-md>
       <h1><b>PARTICIPANTS</b></h1>
       <br />
@@ -35,7 +49,6 @@
                 src="../assets/female.png"
                 class="grey darken-4"
               ></v-img>
-              <!-- <v-icon light :size="60" right>mdi-account-circle</v-icon> -->
             </v-container>
             <v-card-title>
               <div class="text-center">{{ participant.name }}</div>
@@ -59,7 +72,6 @@
                 id="delete"
                 color="#E23C3C"
                 :rounded="true"
-                v-if="participant.upcomingAppointments.length === 0"
                 @click.stop="
                   openDeleteParticipantDialog(participant.participantId)
                 "
@@ -105,6 +117,9 @@ export default {
     },
     openDeleteParticipantDialog(participantId) {
       this.$refs.participantDialogs.openDelete(participantId);
+    },
+    redirectToHome() {
+      this.$router.push("/");
     }
   }
 };
