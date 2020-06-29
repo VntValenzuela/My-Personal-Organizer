@@ -348,9 +348,10 @@ export default {
     recurrentevents() {
       let startDate = new Date(this.appointment.date);
       let endDate = new Date(this.appointment.endDate);
-      this.recurrentdates = [];
- // Evento recurrente diario
+
+      // Evento recurrente diario
       if (this.active === "daily") {
+         this.recurrentdates = [];
         let nextOccurrence = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
@@ -369,45 +370,219 @@ export default {
           this.recurrentdates.push({
             date
           });
-          console.log("Lista de fechas" + this.recurrentdates);
           console.log("Fecha de fin :" + endDate);
         }
          // Evento recurrente semanal
       } else if (this.active === "weekly") {
+        let weeklyEndDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate() + 1
+        );
+        this.recurrentdates = [];
         let nextOccurrence = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
-          startDate.getDate() + 7
+          startDate.getDate() + 8
         );
-        while (endDate.getTime() >= nextOccurrence.getTime()) {
+        while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
+          console.log("Fecha Inicial----" + startDate)
           startDate = nextOccurrence;
           console.log("Fecha del siguiente appointment: " + nextOccurrence);
+          if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
+            console.log("La fecha sobrepasa la fecha limite")
+          } else {
+            let date = nextOccurrence.toISOString().substr(0, 10);
+            this.recurrentdates.push({
+              date
+            });
+            console.log("Fecha de fin :" + weeklyEndDate);
+            console.log("Fecha del siguiente appointment formato ISO: " + date);
+          }
           nextOccurrence = new Date(
             startDate.getFullYear(),
             startDate.getMonth(),
             startDate.getDate() + 7
           );
-          let appointmentnextday = nextOccurrence.toISOString().substr(0, 10);
-          console.log(
-            "Fecha del siguiente appointment 2: " + appointmentnextday
-          );
-          console.log("Fecha de fin :" + endDate);
-          console.log("fecha de inicio :" + startDate);
         }
   // Evento recurrente mensual
       } else if (this.active === "monthly") {
-        console.log("Tercer boton seleccionado");
+        let monthlyStartDate = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1
+        );
+        let nextOccurrence =  new Date(
+          monthlyStartDate.getFullYear(),
+          monthlyStartDate.getMonth(),
+          monthlyStartDate.getDate() + 30
+        );
+        let monthlyEndDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate() + 1
+        );
+        this.recurrentdates = [];
+        if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() == 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 31
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 31
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() == 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 30
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 30
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&  
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 30
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth() ,
+            monthlyStartDate.getDate() + 31
+          );
+        }  else {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 30
+          );
+        }
+        while (monthlyEndDate.getTime() >= nextOccurrence.getTime()) {
+          console.log("Fecha Inicial----" + monthlyStartDate);
+          let previousOccurence = monthlyStartDate;
+          monthlyStartDate = nextOccurrence;
+          console.log("Fecha del siguiente appointment: " + nextOccurrence);
+          if (nextOccurrence.getTime() > monthlyEndDate.getTime()) {
+            console.log("La fecha sobrepasa la fecha limite");
+          } else {
+            let date = nextOccurrence.toISOString().substr(0, 10);
+            this.recurrentdates.push({
+              date
+            });
+            console.log("Fecha del siguiente appointment formato ISO: " + date);
+            console.log("Fecha de fin :" + monthlyEndDate);
+            nextOccurrence = new Date(
+              monthlyStartDate.getFullYear(),
+              monthlyStartDate.getMonth(),
+              monthlyStartDate.getDate() + 30
+            );
+            if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() == 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() == 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 30 &&
+              previousOccurence.getDate() === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            }
+          }
+        }
       }
     },
-      //Por cada fecha que hay en el array creo un appointment
+    //Por cada fecha que hay en el array creo un appointment
     addRecurrentEvents() {
-       this.recurrentevents();
-       this.recurrentdates.forEach(element => {
+      this.recurrentevents();
+      this.recurrentdates.forEach(element => {
         console.log("Fechas" + element.date);
-        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente (creo)
-       this.dispatchAction();
+        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente 
+        this.dispatchAction();
       });
-    }
+    },
+    getDaysinMonth(month, year) {
+      return new Date(year, month + 1, 0).getDate();
+    },
+
   },
 
   mounted() {
