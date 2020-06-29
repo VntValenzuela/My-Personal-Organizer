@@ -3,35 +3,13 @@
 export default {
   //AGENDA
   mutateCreateAgenda(state, agenda) {
-    const foudAgendatIndex = state.agendas.findIndex(
-      agendaFind => agendaFind.name === agenda.name
-    );
-    if (state.agendas[foudAgendatIndex] == null) {
-      agenda.agendaId =
-        "A-" +
-        (Number(
-          state.agendas[state.agendas.length - 1].agendaId.split("-")[1]
-        ) +
-          1);
-      state.agendas.push(agenda);
-    } else {
-      alert("Yout can't repeate a name");
-    }
+    state.agendas.push(agenda);
   },
   mutateUpdateAgenda(state, agendaNew) {
-    const foudAgendatIndex = state.agendas.findIndex(
-      agendaFind =>
-        agendaFind.name === agendaNew.name &&
-        agendaFind.agendaId !== agendaNew.agendaId
+    const foudAgendaIndex2 = state.agendas.findIndex(
+      agenda => agenda.agendaId === agendaNew.agendaId
     );
-    if (state.agendas[foudAgendatIndex] == null) {
-      const foudAgendaIndex2 = state.agendas.findIndex(
-        agenda => agenda.agendaId === agendaNew.agendaId
-      );
-      state.agendas[foudAgendaIndex2] = agendaNew;
-    } else {
-      alert("Yout can't repeate a name");
-    }
+    state.agendas[foudAgendaIndex2] = agendaNew;
   },
   mutateDeleteAgenda(state, agendaId) {
     state.agendas = state.agendas.filter(

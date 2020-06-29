@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Agendas from "../views/Agendas.vue";
 import Organizer from "../views/Organizer.vue";
 import ParticipantView from "../views/Participant.vue";
+import PostponeListView from "../views/PostponeList.vue";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,11 @@ const routes = [
     path: "/organizer",
     name: "Organizer",
     component: Organizer
+  },
+  {
+    path: "/postponeList",
+    name: "PostponeList",
+    component: PostponeListView
   },
   {
     path: "/participant",

@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="organizer">
     <Calendar />
   </div>
 </template>
@@ -9,7 +9,7 @@
 import Calendar from "@/components/Calendar.vue";
 
 export default {
-  name: "Home",
+  name: "Organizer",
   components: {
     Calendar
   }

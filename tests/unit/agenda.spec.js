@@ -102,4 +102,6 @@ describe("Agenda Module", () => {
     wrapper.vm.deleagenda("A-2");
     assert.equal(wrapper.vm.agendas.length, expectedLength);
   });
+
 });
+

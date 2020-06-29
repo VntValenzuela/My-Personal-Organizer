@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-container>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="appointment.name"
               autocomplete="off"
@@ -192,7 +192,6 @@ export default {
   name: "Appointment",
   data() {
     return {
-      // dialog: false,
       color: "#1976D2",
       time: null,
       menu0: false,
@@ -297,9 +296,6 @@ export default {
       return this.participants.map(participant => participant.name);
     },
     appointment() {
-      /*console.log(
-        `APPOINTMENT-> Change ${JSON.stringify(this.selectedAppointment)}`
-      );*/
       return Object.assign({}, this.selectedAppointment);
     }
   },
@@ -318,11 +314,6 @@ export default {
         newId = ("000" + newId).slice(-4);
       }
       this.appointment.id = `SAP-${newId}`;
-    },
-    initializeData() {
-      if (!this.newAppointment) {
-        this.appointment = this.selectedAppointment;
-      }
     },
     dispatchAction() {
       if (this.$refs.form.validate()) {
@@ -344,7 +335,7 @@ export default {
       //this.$refs.form.reset();
       this.$emit("close");
     },
- // Calcuo de lo eventos reccurentes
+ // Calculo de lo eventos reccurentes
     recurrentevents() {
       let startDate = new Date(this.appointment.date);
       let endDate = new Date(this.appointment.endDate);
@@ -581,12 +572,12 @@ export default {
     },
     getDaysinMonth(month, year) {
       return new Date(year, month + 1, 0).getDate();
-    },
+    }
 
   },
 
   mounted() {
     // this.initializeData();
-  }
+    }
 };
 </script>

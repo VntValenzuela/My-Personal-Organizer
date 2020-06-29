@@ -10,7 +10,10 @@
           }"
           style="text-decoration: none"
         >
-          <v-btn large>CALENDARY</v-btn>
+          <v-btn large
+            >CALENDARY
+            <v-icon>mdi-calendar-month</v-icon>
+          </v-btn>
         </router-link>
         <v-spacer />
         <v-btn
@@ -21,7 +24,9 @@
           @click.stop="dialogCreate = true"
         >
           NEW AGENDA
+          <v-icon color="white">mdi-plus</v-icon>
         </v-btn>
+        <v-spacer />
         <v-btn
           id="redirectToParticipants"
           class="ma-2"
@@ -114,13 +119,42 @@ export default {
   methods: {
     ...mapActions(["createAgenda", "updateAgenda", "deleteAgenda"]),
     creaagenda(agenda) {
-      this.createAgenda(agenda);
+      const foudAgendatIndex = this.agendas.findIndex(
+        agendaFind => agendaFind.name === agenda.name
+      );
+      if (this.agendas[foudAgendatIndex] == null) {
+        agenda.agendaId =
+          "A-" +
+          (Number(
+            this.agendas[this.agendas.length - 1].agendaId.split("-")[1]
+          ) +
+            1);
+        this.createAgenda(agenda);
+      } else {
+        alert("Yout can't repeate a name");
+      }
     },
-    updaagenda(agenda) {
-      this.updateAgenda(agenda);
+    updaagenda(agendaNew) {
+      const foudAgendatIndex = this.agendas.findIndex(
+        agendaFind =>
+          agendaFind.name === agendaNew.name &&
+          agendaFind.agendaId !== agendaNew.agendaId
+      );
+      if (this.agendas[foudAgendatIndex] == null) {
+        this.updateAgenda(agendaNew);
+      } else {
+        alert("Yout can't repeate a name");
+      }
     },
     deleagenda(agendaId) {
-      this.deleteAgenda(agendaId);
+      const foudAgendatIndex = this.agendas.findIndex(
+        agendaFind => agendaFind.agendaId === agendaId
+      );
+      if (this.agendas[foudAgendatIndex].appointments.length === 0) {
+        this.deleteAgenda(agendaId);
+      } else {
+        alert("Yout can't delete this agenda");
+      }
     },
     closeCreate() {
       this.dialogDelete = false;

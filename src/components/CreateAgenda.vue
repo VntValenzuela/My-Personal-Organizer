@@ -39,7 +39,7 @@
         </v-col>
       </v-row>
       <v-card-actions>
-        <v-btn color="blue darken-1" @click.stop="closeDialog()">Cancel</v-btn>
+        <v-btn @click.stop="closeDialog()">Cancel</v-btn>
         <v-spacer />
         <v-btn color="blue darken-1" @click.stop="creaagenda()">Create</v-btn>
       </v-card-actions>
@@ -68,7 +68,7 @@ export default {
         if (this.description !== "") {
           if (this.start !== "") {
             if (this.end !== "") {
-              if (this.start !== this.end) {
+              if (this.start < this.end) {
                 this.$emit("creaagenda", {
                   agendaId: "",
                   name: this.name,
@@ -80,7 +80,7 @@ export default {
                 });
                 this.closeDialog();
               } else {
-                alert("Hour range is 0");
+                alert("Hour range invalide");
               }
             } else {
               alert("End time can't be empty");
