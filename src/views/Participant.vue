@@ -11,7 +11,7 @@
         right
         @click.stop="redirectToHome()"
       >
-        <v-icon medium>home</v-icon>
+        <v-icon large>home</v-icon>
       </v-btn>
     </div>
     <v-container class="my-10" grid-list-md>
@@ -37,24 +37,24 @@
           v-for="(participant, index) in participants"
           :key="index"
         >
-          <v-card class="text-center" max-width="250" color="#DFE1E5">
+          <v-card class="ma-3" max-width="250" color="#DFE1E5">
             <v-container>
               <v-img
                 v-if="participant.gender === 'Male'"
                 src="../assets/male.png"
-                class="grey darken-4"
+                class="ma-3"
               ></v-img>
               <v-img
                 v-if="participant.gender === 'Female'"
                 src="../assets/female.png"
-                class="grey darken-4"
+                class="ma-3"
               ></v-img>
             </v-container>
             <v-card-title>
               <div class="text-center">{{ participant.name }}</div>
             </v-card-title>
             <v-card-subtitle>
-              <div>{{ participant.contactNumber }}</div>
+              <div class="text-center">{{ participant.contactNumber }}</div>
             </v-card-subtitle>
             <v-container center>
               <v-btn

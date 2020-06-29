@@ -1,23 +1,45 @@
 <template>
   <div>
-    <v-dialog v-model="dialogRegister" max-width="645px">
-      <v-card>
+    <v-dialog
+      id="dialogRegister"
+      v-model="dialogRegister"
+      max-width="645px"
+      persistent
+    >
+      <v-card shaped>
         <v-col cols="12">
           <v-text-field
+            id="newNameInput"
             v-model="name"
             counter
             maxlength="40"
             label="Name"
+            outlined
+            shaped
+            required
           ></v-text-field>
           <v-text-field
+            id="newContactNumberInput"
             v-model="contactNumber"
             counter="8"
             label="Contact Number"
+            outlined
+            shaped
+            required
           ></v-text-field>
-          <v-select v-model="gender" :items="genders" label="Gender"></v-select>
+          <v-select
+            id="newGenderInput"
+            v-model="gender"
+            :items="genders"
+            label="Gender"
+            outlined
+            shaped
+            required
+          ></v-select>
         </v-col>
         <v-card-actions>
           <v-btn
+            id="cancelRegisterButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -25,6 +47,7 @@
             >Cancel</v-btn
           >
           <v-btn
+            id="registerButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -34,29 +57,46 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogUpdate" max-width="645px">
-      <v-card>
+    <v-dialog
+      id="dialogUpdate"
+      v-model="dialogUpdate"
+      max-width="645px"
+      persistent
+    >
+      <v-card shaped>
         <v-col cols="12">
           <v-text-field
+            id="updatedNameInput"
             v-model="name"
             counter
             maxlength="40"
             label="New Name"
+            outlined
+            shaped
+            required
           ></v-text-field>
           <v-text-field
+            id="updatedContactNumberInput"
             v-model="contactNumber"
             counter="8"
             label="New Contact Number"
+            outlined
+            shaped
+            required
           ></v-text-field>
           <v-select
+            id="updatedGenderInput"
             v-model="gender"
             :items="genders"
             required
             label="Gender"
+            outlined
+            shaped
           ></v-select>
         </v-col>
         <v-card-actions>
           <v-btn
+            id="cancelUpdateButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -64,6 +104,7 @@
             >Cancel</v-btn
           >
           <v-btn
+            id="updateButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -73,11 +114,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogDelete" max-width="500px">
-      <v-card>
+    <v-dialog
+      id="dialogDelete"
+      v-model="dialogDelete"
+      max-width="500px"
+      persistent
+    >
+      <v-card shaped>
         <v-card-title> Please, confirm to delete the participant</v-card-title>
         <v-card-actions>
           <v-btn
+            id="cancelDeleteButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -85,6 +132,7 @@
             >Cancel</v-btn
           >
           <v-btn
+            id="deleteButton"
             class="ma-2"
             outlined
             color="#4682B4"
@@ -223,6 +271,14 @@ export default {
     openUpdate(participantId) {
       this.selectedParticipant = participantId;
       this.dialogUpdate = true;
+      let participantSelected = this.participantList.find(
+        participant => participant.participantId === participantId
+      );
+      if (participantSelected !== null) {
+        this.name = participantSelected.name;
+        this.contactNumber = participantSelected.contactNumber;
+        this.gender = participantSelected.gender;
+      }
     },
     openDelete(participantId) {
       this.selectedParticipant = participantId;
