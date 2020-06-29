@@ -53,6 +53,45 @@
                 @input="menu0 = false"
               ></v-date-picker>
             </v-menu>
+            <v-container fluid>
+              <v-switch
+                :label="`Recurrent: ${recurrentToggle.toString()}`"
+                v-model="recurrentToggle"
+              ></v-switch>
+            </v-container>
+            <div id="RecurrentDIV">
+              <v-menu
+                v-model="menu3"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="200px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    append-icon="event"
+                    v-model="appointment.endDate"
+                    label="End Date"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  :no-title="true"
+                  min="2020-06-23"
+                  max="2020-12-31"
+                  v-model="appointment.endDate"
+                @input="menu3 = false"
+                ></v-date-picker>
+              </v-menu>
+              <v-radio-group v-model="active" row>
+                <v-radio label="Daily:" value="daily"></v-radio>
+                <v-radio label="Weekly" value="weekly"></v-radio>
+                <v-radio label="Monthly" value="monthly"></v-radio>
+              </v-radio-group>
+            </div>
             <v-menu
               ref="menu1"
               v-model="menu1"
@@ -133,7 +172,10 @@
             <v-btn
               color="primary"
               class="mr-4"
-              @click.stop="dispatchAction"
+              @click.stop="
+                dispatchAction();
+                addRecurrentEvents();
+              "
               :disabled="!valid"
               >{{ newAppointment ? "SAVE" : "UPDATE" }}
             </v-btn>
@@ -155,7 +197,10 @@ export default {
       menu0: false,
       menu1: false,
       menu2: false,
+      menu3: false,
       valid: false,
+      active: 0,
+      recurrentToggle: false,
       required(propertyType) {
         return value =>
           (value && (value + "").length > 0) || `${propertyType} is required`;
@@ -189,6 +234,17 @@ export default {
       }
     };
   },
+  watch: {
+    recurrentToggle(newValue) {
+      var x = document.getElementById("RecurrentDIV");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+      console.log(newValue);
+    }
+  },
   props: {
     dialog: {
       type: Boolean,
@@ -205,7 +261,8 @@ export default {
           startHour: null,
           endHour: null,
           agendaId: null,
-          participants: []
+          participants: [],
+          recurrentdates: []
         };
       }
     },
@@ -214,6 +271,7 @@ export default {
       default: false
     }
   },
+
   computed: {
     ...mapGetters([
       "getScheduledAppointments",
@@ -260,8 +318,13 @@ export default {
     dispatchAction() {
       if (this.$refs.form.validate()) {
         if (this.newAppointment) {
+          //console.log("New appointment" + this.naddRecurrentEventsewAppointment)
           this.generateNewId();
-          this.$store.dispatch("addScheduledAppointment", this.appointment);
+          const objectToSend = {};
+          Object.assign(objectToSend, this.appointment);
+          this.$store.dispatch("addScheduledAppointment", objectToSend);
+         // console.log("sending appointment");
+ 
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
@@ -271,7 +334,250 @@ export default {
     reset() {
       //this.$refs.form.reset();
       this.$emit("close");
+    },
+ // Calculo de lo eventos reccurentes
+    recurrentevents() {
+      let startDate = new Date(this.appointment.date);
+      let endDate = new Date(this.appointment.endDate);
+
+      // Evento recurrente diario
+      if (this.active === "daily") {
+         this.recurrentdates = [];
+        let nextOccurrence = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1
+        );
+        while (endDate.getTime() >= nextOccurrence.getTime()) {
+          startDate = nextOccurrence;
+          nextOccurrence = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate() + 1
+          );
+          let date = nextOccurrence.toISOString().substr(0, 10);
+          console.log("Fecha del siguiente appointment: " + date);
+          //Insertando todas la fechas calculadas en un array 
+          this.recurrentdates.push({
+            date
+          });
+          console.log("Fecha de fin :" + endDate);
+        }
+         // Evento recurrente semanal
+      } else if (this.active === "weekly") {
+        let weeklyEndDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate() + 1
+        );
+        this.recurrentdates = [];
+        let nextOccurrence = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 8
+        );
+        while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
+          console.log("Fecha Inicial----" + startDate)
+          startDate = nextOccurrence;
+          console.log("Fecha del siguiente appointment: " + nextOccurrence);
+          if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
+            console.log("La fecha sobrepasa la fecha limite")
+          } else {
+            let date = nextOccurrence.toISOString().substr(0, 10);
+            this.recurrentdates.push({
+              date
+            });
+            console.log("Fecha de fin :" + weeklyEndDate);
+            console.log("Fecha del siguiente appointment formato ISO: " + date);
+          }
+          nextOccurrence = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate() + 7
+          );
+        }
+  // Evento recurrente mensual
+      } else if (this.active === "monthly") {
+        let monthlyStartDate = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate() + 1
+        );
+        let nextOccurrence =  new Date(
+          monthlyStartDate.getFullYear(),
+          monthlyStartDate.getMonth(),
+          monthlyStartDate.getDate() + 30
+        );
+        let monthlyEndDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate() + 1
+        );
+        this.recurrentdates = [];
+        if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() == 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 31
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 31
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() == 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 30
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 30
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&  
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 30
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth() ,
+            monthlyStartDate.getDate() + 31
+          );
+        }  else {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 30
+          );
+        }
+        while (monthlyEndDate.getTime() >= nextOccurrence.getTime()) {
+          console.log("Fecha Inicial----" + monthlyStartDate);
+          let previousOccurence = monthlyStartDate;
+          monthlyStartDate = nextOccurrence;
+          console.log("Fecha del siguiente appointment: " + nextOccurrence);
+          if (nextOccurrence.getTime() > monthlyEndDate.getTime()) {
+            console.log("La fecha sobrepasa la fecha limite");
+          } else {
+            let date = nextOccurrence.toISOString().substr(0, 10);
+            this.recurrentdates.push({
+              date
+            });
+            console.log("Fecha del siguiente appointment formato ISO: " + date);
+            console.log("Fecha de fin :" + monthlyEndDate);
+            nextOccurrence = new Date(
+              monthlyStartDate.getFullYear(),
+              monthlyStartDate.getMonth(),
+              monthlyStartDate.getDate() + 30
+            );
+            if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() == 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() == 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 30 &&
+              previousOccurence.getDate() === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            }
+          }
+        }
+      }
+    },
+    //Por cada fecha que hay en el array creo un appointment
+    addRecurrentEvents() {
+      this.recurrentevents();
+      this.recurrentdates.forEach(element => {
+        console.log("Fechas" + element.date);
+        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente 
+        this.dispatchAction();
+      });
+    },
+    getDaysinMonth(month, year) {
+      return new Date(year, month + 1, 0).getDate();
     }
-  }
+
+  },
+
+  mounted() {
+    // this.initializeData();
+    }
 };
 </script>

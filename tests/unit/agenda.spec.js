@@ -1,3 +1,4 @@
+
 import { assert } from "chai";
 import { mount, createLocalVue } from "@vue/test-utils";
 import Agendas from "@/views/Agendas.vue";
@@ -101,4 +102,6 @@ describe("Agenda Module", () => {
     wrapper.vm.deleagenda("A-2");
     assert.equal(wrapper.vm.agendas.length, expectedLength);
   });
+
 });
+
