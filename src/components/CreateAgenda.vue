@@ -58,8 +58,7 @@ export default {
       name: "",
       description: "",
       start: "",
-      end: "",
-      color: ""
+      end: ""
     };
   },
   methods: {
@@ -101,7 +100,6 @@ export default {
       this.description = "";
       this.start = "";
       this.end = "";
-      this.color = "";
       this.show = false;
     },
     getRandomColor() {

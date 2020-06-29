@@ -1,5 +1,8 @@
 <template>
   <div class="agendas">
+    <span>
+      Parent Component
+    </span>
     <v-container class="my-10" grid-list-md>
       <v-row>
         <h1 id="title">AGENDAS</h1>
@@ -147,14 +150,7 @@ export default {
       }
     },
     deleagenda(agendaId) {
-      const foudAgendatIndex = this.agendas.findIndex(
-        agendaFind => agendaFind.agendaId === agendaId
-      );
-      if (this.agendas[foudAgendatIndex].appointments.length === 0) {
-        this.deleteAgenda(agendaId);
-      } else {
-        alert("Yout can't delete this agenda");
-      }
+      this.deleteAgenda(agendaId);
     },
     closeCreate() {
       this.dialogDelete = false;
