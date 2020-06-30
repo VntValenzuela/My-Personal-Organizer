@@ -216,7 +216,11 @@ export default {
     filteredEvents: []
   }),
   computed: {
-    ...mapGetters(["getScheduledAppointments", "getAgendas"]),
+    ...mapGetters([
+      "getScheduledAppointments",
+      "getAgendas",
+      "getParticipants"
+    ]),
     appointments() {
       return this.getScheduledAppointments;
     },

@@ -1,7 +1,6 @@
 import { assert } from "chai";
 import { mount, createLocalVue } from "@vue/test-utils";
 import Participant from "@/components/Participant.vue";
-//import Calendar from "@/components/Calendar.vue";
 
 import Vuex from "vuex";
 import Vuetify from "vuetify";
@@ -19,7 +18,9 @@ describe("Participants CRUD methods.", () => {
     localVue = createLocalVue();
     localVue.use(Vuex);
     localVue.use(Vuetify);
+
     vuetify = new Vuetify();
+
     store = new Vuex.Store({
       state: mockParticipantsState,
       actions,
@@ -32,7 +33,7 @@ describe("Participants CRUD methods.", () => {
     };
   });
 
-  it("Adding new participant works correctly.", () => {
+  it("Register a new participant works correctly.", () => {
     const wrapper = mount(Participant, {
       store,
       vuetify,
@@ -48,20 +49,7 @@ describe("Participants CRUD methods.", () => {
     wrapper.vm._registerParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
   });
-  /*it("Selecting a participant from global participants list works correctly.", () => {
-    const wrapper = mount(Participant, {
-      store,
-      vuetify,
-      localVue
-    });
-  });
-  it("Don't add a participant if it has already been added to the appointment.", () => {
-    const wrapper = mount(Participant, {
-      store,
-      vuetify,
-      localVue
-    });
-  });*/
+
   it("Don't add a participant if there was another participant with the same name", () => {
     const wrapper = mount(Participant, {
       store,
@@ -77,7 +65,40 @@ describe("Participants CRUD methods.", () => {
     wrapper.vm._registerParticipant();
     assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
   });
-  it("Updating as participant works correctly.", () => {
+
+  it("Don't add a participant if there are empty fields.", () => {
+    const wrapper = mount(Participant, {
+      store,
+      vuetify,
+      localVue
+    });
+    const initialLength = wrapper.vm.$store.state.participants.length;
+    const expectedLength = initialLength;
+    //If one field is invalid
+    wrapper.vm.$data.name = "";
+    wrapper.vm.$data.contactNumber = 67456789;
+    wrapper.vm.$data.gender = "Male";
+    wrapper.vm._registerParticipant();
+    assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
+  });
+
+  it("Don't add a participant if the contact number doesn't have at least 7 digits.", () => {
+    const wrapper = mount(Participant, {
+      store,
+      vuetify,
+      localVue
+    });
+    const initialLength = wrapper.vm.$store.state.participants.length;
+    const expectedLength = initialLength;
+    //If one field is invalid
+    wrapper.vm.$data.name = "Andres Rojas";
+    wrapper.vm.$data.contactNumber = 123;
+    wrapper.vm.$data.gender = "Male";
+    wrapper.vm._registerParticipant();
+    assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
+  });
+
+  it("Updating a participant works correctly.", () => {
     const wrapper = mount(Participant, {
       store,
       vuetify,
@@ -103,11 +124,8 @@ describe("Participants CRUD methods.", () => {
       expectedContactNumber
     );
   });
-  /*
-  it("Delete a participant only from the appointment, not from global list. ", () => {
 
-  });*/
-  it("Delete a participant from the global list if it was belonging to past appointments.", () => {
+  it("Delete a participant from the global list if it doesn't have any upcoming appointment.", () => {
     const wrapper = mount(Participant, {
       store,
       vuetify,
@@ -116,7 +134,24 @@ describe("Participants CRUD methods.", () => {
     const initialLength = wrapper.vm.$store.state.participants.length;
     const expectedLength = initialLength - 1;
     let selectedId = wrapper.vm.$store.state.participants[2].participantId;
-    //If all fields are valid
+
+    wrapper.vm.$data.selectedParticipant = selectedId;
+
+    wrapper.vm._deleteParticipant();
+    assert.equal(wrapper.vm.$store.state.participants.length, expectedLength);
+  });
+
+  it("Don't delete a participant from the global list if it has upcoming appointments.", () => {
+    const wrapper = mount(Participant, {
+      store,
+      vuetify,
+      localVue
+    });
+    let initialLength = wrapper.vm.$store.state.participants.length;
+    let expectedLength = initialLength;
+    let selectedId =
+      wrapper.vm.$store.state.participants[initialLength - 2].participantId;
+
     wrapper.vm.$data.selectedParticipant = selectedId;
 
     wrapper.vm._deleteParticipant();
