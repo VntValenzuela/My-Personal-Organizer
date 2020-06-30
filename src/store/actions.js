@@ -38,5 +38,11 @@ export default {
   },
   updateScheduledAppointment({ commit }, updatedScheduledAppointment) {
     commit("updateScheduledAppointment", updatedScheduledAppointment);
+  },
+  addPostponeAppointment({ commit }, newPostponeAppointment) {
+    commit("addScheduledAppointment", newPostponeAppointment);
+  },
+  deletePostponeAppointment({ commit }, deletedPostponeAppointmentId) {
+    commit("deleteScheduledAppointment", deletedPostponeAppointmentId);
   }
 };

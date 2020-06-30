@@ -15,5 +15,8 @@ export default {
   },
   getParticipants(state) {
     return state.participants;
+  },
+  getPostponeList(state) {
+    return state.postponedAppointments;
   }
 };

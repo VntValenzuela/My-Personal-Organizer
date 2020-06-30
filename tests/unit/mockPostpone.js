@@ -1,15 +1,4 @@
-import Vue from "vue";
-import Vuex from "vuex";
-
-import createPersistedState from "vuex-persistedstate";
-
-import actions from "./actions";
-import getters from "./getters";
-import mutations from "./mutations";
-
-Vue.use(Vuex);
-
-const state = {
+export default {
   agendas: [
     {
       agendaId: "A-1",
@@ -18,7 +7,7 @@ const state = {
       start: "08:30",
       end: "18:30",
       color: "#4DB6AC",
-      appointments: ["not-null", "nor-null"]
+      appointments: ["not-null"]
     },
     {
       agendaId: "A-2",
@@ -42,50 +31,30 @@ const state = {
   participants: [
     {
       participantId: 1,
-      name: "Andres Peredo Rocha",
+      name: "Juan Perez Rocha",
       contactNumber: 71234567,
+      upcomingAppointments: [],
       gender: "Male"
     },
     {
       participantId: 2,
       name: "Andrea Paredes López",
       contactNumber: 72244661,
+      upcomingAppointments: [],
       gender: "Female"
     },
     {
       participantId: 3,
       name: "Fernando Torrez Siles",
       contactNumber: 73467812,
+      upcomingAppointments: [],
       gender: "Male"
     },
     {
       participantId: 4,
       name: "Carla Andrade Rojas",
       contactNumber: 79983812,
-      gender: "Female"
-    },
-    {
-      participantId: 5,
-      name: "Sergio Fernandez Rios",
-      contactNumber: 72740037,
-      gender: "Male"
-    },
-    {
-      participantId: 6,
-      name: "Fernanda Rojas Teran",
-      contactNumber: 68580048,
-      gender: "Female"
-    },
-    {
-      participantId: 7,
-      name: "Carlos Gomez Velarde",
-      contactNumber: 73497105,
-      gender: "Male"
-    },
-    {
-      participantId: 8,
-      name: "Valentina Flores Rios",
-      contactNumber: 62707170,
+      upcomingAppointments: [],
       gender: "Female"
     }
   ],
@@ -105,9 +74,9 @@ const state = {
       name: "Viaje de Negocios",
       description: "Viaje a Argentina",
       date: "2020-06-23",
-      startHour: "18:30",
-      endHour: "21:00",
-      agendaId: "A-2",
+      startHour: "22:00",
+      endHour: "23:00",
+      agendaId: "A-1",
       participants: []
     }
   ],
@@ -115,18 +84,18 @@ const state = {
     {
       name: "Dentist",
       description: "I need to go to dentist"
-      // date: "06/18/2020"
-      // startHour: "10:00",
-      // endHour: "11:00",
-      // agendaId: "A-1"
     },
     {
       name: "Excersice",
       description: "I need to go to GYM"
-      // date: "06/18/2020"
-      // startHour: "10:00",
-      // endHour: "11:00",
-      // agendaId: "A-1"
+    },
+    {
+      name: "Sleep",
+      description: "I need to go to dentist"
+    },
+    {
+      name: "Play",
+      description: "I need to go to GYM"
     }
   ],
   recursiveAppointments: [
@@ -143,12 +112,3 @@ const state = {
     }
   ]
 };
-
-export default new Vuex.Store({
-  plugins: [createPersistedState()],
-  state,
-  actions,
-  mutations,
-  getters,
-  modules: {}
-});
