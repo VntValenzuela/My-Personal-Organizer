@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import createPersistedState from "vuex-persistedstate";
+
 import actions from "./actions";
 import getters from "./getters";
 import mutations from "./mutations";
@@ -40,7 +42,7 @@ const state = {
   participants: [
     {
       participantId: 1,
-      name: "Andrés Peredo Rocha",
+      name: "Andres Peredo Rocha",
       contactNumber: 71234567,
       gender: "Male"
     },
@@ -135,6 +137,7 @@ const state = {
 };
 
 export default new Vuex.Store({
+  plugins: [createPersistedState()],
   state,
   actions,
   mutations,

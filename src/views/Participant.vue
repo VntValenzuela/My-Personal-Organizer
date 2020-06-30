@@ -1,5 +1,5 @@
 <template>
-  <div class="participants">
+  <div id="participantsDiv" class="participants">
     <div>
       <v-btn
         id="redirectToHome"

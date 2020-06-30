@@ -153,9 +153,9 @@ export default {
     return {
       participantId: 0,
       name: "",
-      contactNumber: 0,
+      contactNumber: null,
       upcomingAppointments: [],
-      selectedParticipant: null,
+      selectedParticipant: 1,
       gender: "",
       genders: ["Female", "Male"],
       dialogUpdate: false,
@@ -228,7 +228,9 @@ export default {
             this.cancelDelete();
           } else {
             alert(
-              "The participant can't be removed, it has upcoming appointments. \nPlease, remove the participant from each appointment and try again."
+              "The participant can't be removed, it has upcoming appointments:. \n  " +
+                this.upcomingAppointments +
+                "\n Please, remove the participant from each appointment and try again."
             );
           }
         }
@@ -286,12 +288,14 @@ export default {
     },
     getAmountUpcomingAppointments() {
       let amount = 0;
+      this.upcomingAppointments = [];
       this.scheduledAppointmentsList.forEach(appointment => {
         let participantSelected = this.participantList.find(
           participant => participant.participantId === this.selectedParticipant
         );
         if (appointment.participants.includes(participantSelected.name)) {
           amount++;
+          this.upcomingAppointments.push(appointment.name);
         }
       });
       return amount;
