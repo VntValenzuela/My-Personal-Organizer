@@ -46,6 +46,7 @@
         <v-spacer />
         <v-btn
           id="de"
+          class="delete"
           color="red darken-1"
           :disabled="this.appointments.length != 0"
           @click.stop="deleagenda()"
@@ -99,7 +100,7 @@ export default {
       }
     },
     deleagenda() {
-      if (this.appointments.length == 0){
+      if (this.appointments.length == 0) {
         this.$emit("deleagenda", this.agendaId);
       } else {
         alert("You can't delete the agenda");

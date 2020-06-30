@@ -1,8 +1,5 @@
 <template>
   <div class="agendas">
-    <span>
-      Parent Component
-    </span>
     <v-container class="my-10" grid-list-md>
       <v-row>
         <h1 id="title">AGENDAS</h1>
@@ -114,9 +111,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getAgendas"]),
+    ...mapGetters(["getAgendas", "getScheduledAppointments"]),
     agendas() {
       return this.getAgendas;
+    },
+    scheduledAppointments() {
+      return this.getScheduledAppointments;
     }
   },
   methods: {
@@ -159,6 +159,7 @@ export default {
       this.dialogDelete = false;
     },
     openUpdateDeleteDialog(agenda) {
+      agenda.appointments = this.getA(agenda.agendaId);
       this.$refs.updateDeleteDialog.setAgenda(agenda);
       this.dialogUpdateDelete = true;
     },
@@ -172,6 +173,11 @@ export default {
       var b = parseInt(hexcolor.substr(4, 2), 16);
       var yiq = (r * 299 + g * 587 + b * 114) / 1000;
       return yiq >= 128 ? "black" : "white";
+    },
+    getA(agendaId) {
+      return this.scheduledAppointments.filter(
+        scheduledAppointment => scheduledAppointment.agendaId == agendaId
+      );
     }
   }
 };

@@ -115,7 +115,7 @@ describe("Agenda Module", () => {
     assert.equal(wrapper.vm.agendas.length, expectedLength);
   });
 
-  it("Check if time range is valid when updating", () => {
+  it("Check if time range isn't invalid when updating", () => {
     const wrapper = mount(Agendas, {
       store,
       router,
@@ -133,29 +133,5 @@ describe("Agenda Module", () => {
     });
     wrapper.findComponent(UpdateDeleteAgenda).vm.updaagenda();
     assert.equal(wrapper.vm.agendas[2].start, "10:30");
-  });
-
-  it("Don't create agenda with invalide time range", () => {
-    const wrapper = mount(Agendas, {
-      store,
-      router,
-      vuetify,
-      localVue
-    });
-    let expectedLength = 3;
-    wrapper.findComponent(CreateAgenda).vm.name = "newAgenda2";
-    wrapper.findComponent(CreateAgenda).vm.description = "description";
-    wrapper.findComponent(CreateAgenda).vm.start = "16:10";
-    wrapper.findComponent(CreateAgenda).vm.end = "14:20";
-    wrapper.findComponent(CreateAgenda).vm.color = "";
-
-    wrapper.findComponent(CreateAgenda).vm.creaagenda();
-    assert.equal(wrapper.vm.agendas.length, expectedLength);
-
-    expectedLength = 4;
-    wrapper.findComponent(CreateAgenda).vm.start = "11:10";
-    wrapper.findComponent(CreateAgenda).vm.end = "14:20";
-    wrapper.findComponent(CreateAgenda).vm.creaagenda();
-    assert.equal(wrapper.vm.agendas.length, expectedLength);
   });
 });
