@@ -1,10 +1,11 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="600px" id="dialog-element">
       <v-card>
         <v-container>
           <v-form ref="form" v-model="valid">
             <v-text-field
+              id="name-appointment"
               v-model="appointment.name"
               autocomplete="off"
               label="Appointment Name"
@@ -12,6 +13,7 @@
             >
             </v-text-field>
             <v-text-field
+              id="description-appointment"
               v-model="appointment.description"
               autocomplete="off"
               label="Description"
@@ -19,6 +21,7 @@
             >
             </v-text-field>
             <v-select
+              id="agenda-appointment"
               v-model="appointment.agendaId"
               :items="agendas"
               item-text="name"
@@ -27,6 +30,7 @@
               :rules="[required('Agenda')]"
             ></v-select>
             <v-menu
+              class="menu-date"
               v-model="menu0"
               :close-on-content-click="false"
               :nudge-right="40"
@@ -34,8 +38,9 @@
               offset-y
               min-width="200px"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ on, attrs }" class="template-date">
                 <v-text-field
+                  id="date-appointment"
                   append-icon="event"
                   v-model="appointment.date"
                   label="Date"
@@ -101,6 +106,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  id="start-appointment"
                   v-model="appointment.startHour"
                   append-icon="access_time"
                   label="Starting Hour"
@@ -134,6 +140,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  id="end-appointment"
                   append-icon="access_time"
                   v-model="appointment.endHour"
                   label="Ending Hour"
@@ -158,15 +165,22 @@
             </v-menu>
             <v-select
               v-model="appointment.participants"
-              :items="participantsNames"
+              :items="participants"
+              item-text="name"
+              item-value="participantId"
               multiple
               append-icon="mdi-plus"
               label="Select participants"
             ></v-select>
-            <v-btn color="primary" class="mr-4" @click.stop="reset"
+            <v-btn
+              id="btn-close"
+              color="primary"
+              class="mr-4"
+              @click.stop="reset"
               >CLOSE
             </v-btn>
             <v-btn
+              id="btn-save-update"
               color="primary"
               class="mr-4"
               @click.stop="
@@ -197,9 +211,10 @@ export default {
       menu2: false,
       menu3: false,
       valid: false,
-      active: 0,
+      active: "none",
       recurrentToggle: false,
       validated: 0,
+      recurrentdates: [],
       required(propertyType) {
         return value =>
           (value && (value + "").length > 0) || `${propertyType} is required`;
@@ -264,8 +279,7 @@ export default {
           endHour: null,
           agendaId: null,
           participants: [],
-          endDate: null,
-          recurrentdates: []
+          endDate: null
         };
       }
     },
@@ -307,9 +321,17 @@ export default {
   },
   methods: {
     addScheduledAppointment() {
-      this.generateNewId();
-      this.$store.dispatch("addScheduledAppointment", this.appointment);
-      this.reset();
+      if (this.validAgendaHours()) {
+        this.generateNewId();
+        //console.log("Adding Appointment" + JSON.stringify(this.appointment));
+        this.$store.dispatch("addScheduledAppointment", this.appointment);
+      }
+    },
+    updateScheduledAppointment() {
+      if (this.validAgendaHours()) {
+        //console.log("Updating Event" + JSON.stringify(this.appointment.id));
+        this.$store.dispatch("updateScheduledAppointment", this.appointment);
+      }
     },
     generateNewId() {
       const numberOfAppointments = this.appointments.length;
@@ -320,11 +342,6 @@ export default {
         newId = ("000" + newId).slice(-4);
       }
       this.appointment.id = `SAP-${newId}`;
-    },
-    initializeData() {
-      if (!this.newAppointment) {
-        this.appointment = this.selectedAppointment;
-      }
     },
     dispatchAction() {
       if (this.$refs.form.validate()) {
@@ -338,13 +355,34 @@ export default {
           // console.log("sending appointment");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
+          this.reset();
         }
-        this.reset();
+        if (this.active === "none") {
+          this.reset();
+        }
       }
     },
     reset() {
-      //this.$refs.form.reset();
+      this.$refs.form.reset();
       this.$emit("close");
+    },
+    //same logis as form validation in dialog
+    validAgendaHours() {
+      if (this.newAppointment) {
+        const value = this.appointment.startHour;
+        let agenda = {};
+        let msg = "Select a Agenda for this Appointment";
+        if (typeof this.appointment.agendaId === "string") {
+          agenda = this.agendas.find(
+            agenda => agenda.agendaId === this.appointment.agendaId
+          );
+          msg = `Starting Hour Hour must be higher than Agenda Starting hour ${agenda.start}`;
+        }
+        console.log(msg);
+        return value && (value + "").length > 0 && value >= agenda.start;
+      } else {
+        return true;
+      }
     },
     // Calculo de lo eventos reccurentes
     recurrentevents(sDate, eDate) {
@@ -611,14 +649,11 @@ export default {
           this.dispatchAction();
         });
       }
+      this.reset();
     },
     getDaysinMonth(month, year) {
       return new Date(year, month + 1, 0).getDate();
     }
-  },
-
-  mounted() {
-    // this.initializeData();
   }
 };
 </script>

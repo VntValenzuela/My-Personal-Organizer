@@ -1,4 +1,4 @@
-module.exports = {
+/*module.exports = {
   "Adding new participant works correctly": browser => {
     browser
       .init()
@@ -83,3 +83,5 @@ module.exports = {
       .end();
   }
 };
+*/
+s

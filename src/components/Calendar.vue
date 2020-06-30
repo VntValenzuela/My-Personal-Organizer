@@ -1,7 +1,10 @@
 <template>
   <div>
     <v-app-bar app flat color="white" clipped-left height="50">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        id="nav-var-calendar"
+        @click="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <img class="mr-3" :src="require('../assets/Calendar.png')" height="40" />
       <v-toolbar-title>
         Calendar
@@ -42,13 +45,14 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-navigation-drawer app v-model="drawer" clipped>
+    <v-navigation-drawer app v-model="drawer" clipped class="nav-element">
       <v-btn
+        id="btn-create"
         dark
         rounded
         large
         color="white"
-        class="black--text"
+        class="black--text ml-4 mt-4"
         @click="sendData(selectedAppointment, true)"
       >
         <v-icon large color="light-blue" left>mdi-plus</v-icon> Create
@@ -92,7 +96,11 @@
       <v-subheader>Agendas</v-subheader>
       <v-list flat>
         <v-list-item-group v-model="selectedAgendas" multiple color="indigo">
-          <v-list-item v-for="agenda in agendas" :key="agenda.id">
+          <v-list-item
+            v-for="agenda in agendas"
+            :key="agenda.id"
+            class="checkbox-for-agenda"
+          >
             <template v-slot:default="{ active }">
               <v-list-item-action>
                 <v-checkbox
@@ -101,7 +109,9 @@
                 ></v-checkbox>
               </v-list-item-action>
 
-              <v-list-item-content>
+              <v-list-item-content
+                :id="`checkbox-${agenda.name.toLowerCase()}`"
+              >
                 <v-list-item-title>{{ agenda.name }}</v-list-item-title>
                 <v-list-item-subtitle>{{
                   agenda.description

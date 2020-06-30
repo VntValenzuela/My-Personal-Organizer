@@ -1,17 +1,31 @@
 export default {
   agendas: [
     {
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       name: "Work",
-      description: "My Agenda to manage my work",
-      startHour: "10:00",
-      endHour: "16:00",
-      appointments: [
-        // scheduledAppointments.filter(app => app.agendaId === this.agendaId)
-        // concat
-        // Iterate to simulate by clonning
-        // recursiveAppointments.filter(app => app.agendaId === this.agendaId)
-      ]
+      description: "my agenda for work",
+      start: "08:30",
+      end: "18:30",
+      color: "#4DB6AC",
+      appointments: ["not-null"]
+    },
+    {
+      agendaId: "A-2",
+      name: "Personal",
+      description: "my agenda for my things",
+      start: "18:30",
+      end: "21:30",
+      color: "#FFEA00",
+      appointments: []
+    },
+    {
+      agendaId: "A-3",
+      name: "Entertainment",
+      description: "for entertainment",
+      start: "11:30",
+      end: "14:30",
+      color: "#90A4AE",
+      appointments: []
     }
   ],
   scheduledAppointments: [
@@ -22,7 +36,7 @@ export default {
       date: "2020-06-22",
       startHour: "10:00",
       endHour: "11:00",
-      agendaId: "ANG-0001",
+      agendaId: "A-1",
       participants: ["PART-001", "PART-002"]
     },
     {
@@ -30,40 +44,13 @@ export default {
       name: "Viaje de Negocios",
       description: "Viaje a Argentina",
       date: "2020-06-23",
-      startHour: "22:00",
-      endHour: "23:00",
-      agendaId: "ANG-0001",
+      startHour: "18:30",
+      endHour: "21:00",
+      agendaId: "A-2",
       participants: []
     }
   ],
-  postponedAppointments: [
-    {
-      name: "Dentist",
-      description: "I need to go to dentist"
-      // date: "06/18/2020"
-      // startHour: "10:00",
-      // endHour: "11:00",
-      // agendaId: "ANG-001"
-    }
-  ],
-  recursiveAppointments: [
-    {
-      name: "Dentist",
-      description: "I need to go to dentist",
-      date: "06/19/2020",
-      endDate: "12/18/2020",
-      frequency: "Day|Week|Month",
-      startHour: "10:00",
-      endHour: "11:00",
-      agendaId: "ANG-0001",
-      participants: ["PART-001"]
-    }
-  ],
-  participants: [
-    {
-      participantId: "PART-001",
-      name: "Person A",
-      contactNumber: "70710101"
-    }
-  ]
+  postponedAppointments: [],
+  recursiveAppointments: [],
+  participants: []
 };

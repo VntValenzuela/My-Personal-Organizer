@@ -1,16 +1,17 @@
 <template>
   <div class="agendas">
     <v-container class="my-10" grid-list-md>
-      <v-row>
+      <v-row class="header-btns">
         <h1 id="title">AGENDAS</h1>
         <v-spacer />
         <router-link
+          id="btn-calendar-link"
           :to="{
             name: 'Organizer'
           }"
           style="text-decoration: none"
         >
-          <v-btn large
+          <v-btn id="btn-calendar" large
             >CALENDARY
             <v-icon>mdi-calendar-month</v-icon>
           </v-btn>
