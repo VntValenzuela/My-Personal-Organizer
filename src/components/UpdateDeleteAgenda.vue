@@ -40,13 +40,12 @@
       <v-card-actions>
         <v-btn color="gray darken-1" @click.stop="show = false">CANCEL</v-btn>
         <v-spacer />
-        <v-btn color="blue darken-1" @click.stop="updaagenda()"
+        <v-btn color="blue darken-1" dark @click.stop="updaagenda()"
           >UPDATE<v-icon>mdi-pencil</v-icon></v-btn
         >
         <v-spacer />
         <v-btn
-          id="de"
-          class="delete"
+          dark
           color="red darken-1"
           :disabled="this.appointments.length != 0"
           @click.stop="deleagenda()"
@@ -88,7 +87,7 @@ export default {
               color: this.color,
               appointments: this.appointments
             });
-            this.closeDialog();
+            this.show = false;
           } else {
             alert("Hour range invalide");
           }
@@ -102,13 +101,10 @@ export default {
     deleagenda() {
       if (this.appointments.length == 0) {
         this.$emit("deleagenda", this.agendaId);
+        this.show = false;
       } else {
         alert("You can't delete the agenda");
       }
-    },
-    closeDialog() {
-      this.$emit("close-update");
-      this.show = false;
     },
     setAgenda(agenda) {
       this.agendaId = agenda.agendaId;

@@ -10,17 +10,17 @@
           }"
           style="text-decoration: none"
         >
-          <v-btn large
-            >CALENDARY
+          <v-btn large class="ma-2"
+            >CALENDAR
             <v-icon>mdi-calendar-month</v-icon>
           </v-btn>
         </router-link>
         <v-spacer />
         <v-btn
           large
-          id="create"
           class="ma-2"
-          color="blue"
+          color="light-blue lighten-1
+"
           @click.stop="dialogCreate = true"
         >
           NEW AGENDA
@@ -111,12 +111,23 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getAgendas", "getScheduledAppointments"]),
+    ...mapGetters([
+      "getAgendas",
+      "getScheduledAppointments",
+      "getPostponedAppointments",
+      "getRecursiveAppointments"
+    ]),
     agendas() {
       return this.getAgendas;
     },
     scheduledAppointments() {
       return this.getScheduledAppointments;
+    },
+    postponedAppointments() {
+      return this.getPostponedAppointments;
+    },
+    recursiveAppointments() {
+      return this.getRecursiveAppointments;
     }
   },
   methods: {
@@ -152,12 +163,6 @@ export default {
     deleagenda(agendaId) {
       this.deleteAgenda(agendaId);
     },
-    closeCreate() {
-      this.dialogDelete = false;
-    },
-    closeUpdate() {
-      this.dialogDelete = false;
-    },
     openUpdateDeleteDialog(agenda) {
       agenda.appointments = this.getA(agenda.agendaId);
       this.$refs.updateDeleteDialog.setAgenda(agenda);
@@ -175,8 +180,17 @@ export default {
       return yiq >= 128 ? "black" : "white";
     },
     getA(agendaId) {
-      return this.scheduledAppointments.filter(
-        scheduledAppointment => scheduledAppointment.agendaId == agendaId
+      return (
+        this.scheduledAppointments.filter(
+          scheduledAppointment => scheduledAppointment.agendaId == agendaId
+        ) +
+        this.recursiveAppointments.filter(
+          recursiveAppointment => recursiveAppointment.agendaId == agendaId
+        ) /*+
+        
+        this.postponedAppointments.filter(
+          postponedAppointment => postponedAppointment.agendaId == agendaId
+        )*/
       );
     }
   }

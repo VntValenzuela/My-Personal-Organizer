@@ -95,7 +95,6 @@ export default {
       }
     },
     closeDialog() {
-      this.$emit("close-create");
       this.name = "";
       this.description = "";
       this.start = "";

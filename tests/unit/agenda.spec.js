@@ -45,7 +45,7 @@ describe("Agenda Module", () => {
     };
   });
 
-  it("Don't create agendas with name repeated", () => {
+  it("1. Don't create agendas with name repeated", () => {
     const wrapper = mount(Agendas, {
       store,
       router,
@@ -80,7 +80,7 @@ describe("Agenda Module", () => {
     );
   });
 
-  it("Don't delete agendas with appointments", () => {
+  it("2. Don't delete agendas with appointments", () => {
     const wrapper = mount(Agendas, {
       store,
       router,
@@ -115,13 +115,15 @@ describe("Agenda Module", () => {
     assert.equal(wrapper.vm.agendas.length, expectedLength);
   });
 
-  it("Check if time range isn't invalid when updating", () => {
+  it("3. Check if time range isn't invalid when updating", () => {
     const wrapper = mount(Agendas, {
       store,
       router,
       vuetify,
       localVue
     });
+
+    let expectedStartHour = "10:30";
     wrapper.findComponent(UpdateDeleteAgenda).vm.setAgenda({
       agendaId: "A-4",
       name: "newAgenda",
@@ -132,6 +134,42 @@ describe("Agenda Module", () => {
       appointments: ["not-null"]
     });
     wrapper.findComponent(UpdateDeleteAgenda).vm.updaagenda();
-    assert.equal(wrapper.vm.agendas[2].start, "10:30");
+    assert.equal(wrapper.vm.agendas[2].start, expectedStartHour);
+  });
+
+  it("3. Check name doesn't repeate when updating", () => {
+    const wrapper = mount(Agendas, {
+      store,
+      router,
+      vuetify,
+      localVue
+    });
+
+    let expectedName = "Work";
+    console.log(wrapper.vm.agendas[0].name);
+    wrapper.findComponent(UpdateDeleteAgenda).vm.setAgenda({
+      agendaId: "A-1",
+      name: "Work2",
+      description: "my agenda for work",
+      start: "08:30",
+      end: "18:30",
+      color: "#4DB6AC",
+      appointments: ["not-null"]
+    });
+    wrapper.findComponent(UpdateDeleteAgenda).vm.updaagenda();
+    assert.equal(wrapper.vm.agendas[0].name, expectedName);
+
+    expectedName = "Work3";
+    wrapper.findComponent(UpdateDeleteAgenda).vm.setAgenda({
+      agendaId: "A-1",
+      name: "Work3",
+      description: "my agenda for work",
+      start: "08:30",
+      end: "18:30",
+      color: "#4DB6AC",
+      appointments: ["not-null"]
+    });
+    wrapper.findComponent(UpdateDeleteAgenda).vm.updaagenda();
+    assert.equal(wrapper.vm.agendas[0].name, expectedName);
   });
 });
