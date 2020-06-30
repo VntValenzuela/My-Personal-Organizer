@@ -262,6 +262,7 @@ export default {
         if (this.newAppointment) {
           this.generateNewId();
           this.$store.dispatch("addScheduledAppointment", this.appointment);
+          this.$emit("save");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
