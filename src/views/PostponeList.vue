@@ -1,17 +1,100 @@
 <template>
-  <div>
-    <v-card>
-      <v-responsive :aspect-ratio="16 / 9">
-        <v-card-text>
-          This card will always be 16:9 (unless you put more stuff in it)
-        </v-card-text>
-      </v-responsive>
-    </v-card>
-  </div>
+  <v-card>
+    <v-card-title>
+      Postpone List
+    </v-card-title>
+    <v-btn
+      class="buttonBack"
+      color="orange darken-2"
+      dark
+      @click="redirectToView('organizer')"
+    >
+      <v-icon dark left>mdi-arrow-left</v-icon>Back
+    </v-btn>
+    <v-data-table
+      :headers="headers"
+      :items="postponedAppointments"
+      :single-select="singleSelect"
+      v-model="table"
+      class="postponeList"
+    >
+      <template v-slot:item.pActivate="{ item }">
+        <v-icon small class="mr-2" @click="Respone(selectedEvent, true)">
+          mdi-pencil
+        </v-icon>
+        <Appointment
+          :selectedAppointment="selectedAppointment"
+          :dialog="dialog"
+          :newAppointment="newAppointment"
+          @close="dialog = false"
+          @save="deleteItem(item)"
+        />
+
+        <v-icon small @click="deleteItem(item)">
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import Appointment from "@/components/Appointment.vue";
+
 export default {
-  name: "PostponeList"
+  components: {
+    Appointment
+  },
+  data() {
+    return {
+      newAppointment: false,
+      selectedAppointment: {},
+      dialog: false,
+      singleSelect: "",
+      postpone: {},
+      selectedEvent: {},
+      item: {},
+      headers: [
+        {
+          text: "Name",
+          align: "start",
+          sortable: false,
+          value: "name"
+        },
+        { text: "Description", value: "description" },
+        { text: "Activate", value: "pActivate", sortable: false }
+      ],
+      postponedAppointments: []
+    };
+  },
+  computed: {
+    ...mapGetters(["getPostponeList"]),
+    table() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.postponedAppointments = this.getPostponeList;
+      return this.getPostponeList;
+    }
+  },
+  methods: {
+    Respone(selectedAppointment, newAppointment) {
+      if (newAppointment) {
+        this.selectedAppointment = {};
+      } else {
+        this.selectedAppointment = selectedAppointment;
+      }
+      this.newAppointment = newAppointment;
+      this.dialog = true;
+    },
+    deleteItem(item) {
+      this.postpone = { name: item.name, description: item.description };
+      this.$store.dispatch("deletePostponeAppointment", this.postpone);
+      const index = this.getPostponeList.indexOf(item);
+      this.getPostponeList.splice(index, 1);
+    },
+    redirectToView(route) {
+      this.$router.push(`/${route}`);
+    }
+  }
 };
 </script>

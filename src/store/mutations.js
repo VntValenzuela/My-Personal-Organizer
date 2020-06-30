@@ -79,5 +79,15 @@ export default {
         updatedScheduledAppointment
       );
     }
+  },
+  // POSTPONE MUTATIONS
+  addPostponeAppointment(state, newPostponeAppointment) {
+    state.postponedAppointments.push(newPostponeAppointment);
+  },
+  deletePostponeAppointment(state, deletedPostponeAppointmentId) {
+    state.postponedAppointments = state.postponedAppointments.filter(
+      postponedAppointments =>
+        postponedAppointments.name !== deletedPostponeAppointmentId
+    );
   }
 };

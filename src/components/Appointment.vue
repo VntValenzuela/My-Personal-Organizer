@@ -334,6 +334,7 @@ export default {
           const objectToSend = {};
           Object.assign(objectToSend, this.appointment);
           this.$store.dispatch("addScheduledAppointment", objectToSend);
+          this.$emit("save");
           // console.log("sending appointment");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
