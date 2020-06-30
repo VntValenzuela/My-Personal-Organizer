@@ -1,7 +1,10 @@
 <template>
   <div>
     <v-app-bar app flat color="white" clipped-left height="50">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        id="nav-var-calendar"
+        @click="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <img class="mr-3" :src="require('../assets/Calendar.png')" height="40" />
       <v-toolbar-title>
         Calendar
@@ -42,8 +45,9 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <v-navigation-drawer app v-model="drawer" clipped>
+    <v-navigation-drawer app v-model="drawer" clipped class="nav-element">
       <v-btn
+        id="btn-create"
         dark
         rounded
         large

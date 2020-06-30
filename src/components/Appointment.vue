@@ -1,10 +1,16 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="600px"
+      class="dialog-element"
+    >
       <v-card>
         <v-container>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
+              id="name-appointment"
               v-model="appointment.name"
               autocomplete="off"
               label="Appointment Name"
@@ -12,6 +18,7 @@
             >
             </v-text-field>
             <v-text-field
+              id="description-appointment"
               v-model="appointment.description"
               autocomplete="off"
               label="Description"
@@ -19,6 +26,7 @@
             >
             </v-text-field>
             <v-select
+              id="agenda-appointment"
               v-model="appointment.agendaId"
               :items="agendas"
               item-text="name"
@@ -27,6 +35,7 @@
               :rules="[required('Agenda')]"
             ></v-select>
             <v-menu
+              class="menu-date"
               v-model="menu0"
               :close-on-content-click="false"
               :nudge-right="40"
@@ -34,8 +43,9 @@
               offset-y
               min-width="200px"
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ on, attrs }" class="template-date">
                 <v-text-field
+                  id="date-appointment"
                   append-icon="event"
                   v-model="appointment.date"
                   label="Date"
@@ -55,7 +65,7 @@
             </v-menu>
             <v-container fluid>
               <v-switch
-                :label="`Recurrent: ${recurrentToggle.toString()}`"
+                :label="`Recurrent: ${recurrentToggle}`"
                 v-model="recurrentToggle"
               ></v-switch>
             </v-container>
@@ -83,7 +93,7 @@
                   min="2020-06-23"
                   max="2020-12-31"
                   v-model="appointment.endDate"
-                @input="menu3 = false"
+                  @input="menu3 = false"
                 ></v-date-picker>
               </v-menu>
               <v-radio-group v-model="active" row>
@@ -104,17 +114,14 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  id="start-appointment"
                   v-model="appointment.startHour"
                   append-icon="access_time"
                   label="Starting Hour"
                   readonly
                   v-bind="attrs"
                   v-on="on"
-                  :rules="[
-                    required('Start Hour'),
-                    higherAgenda('Starting'),
-                    lowerAgenda('Starting')
-                  ]"
+                  :rules="[]"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -137,6 +144,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
+                  id="end-appointment"
                   append-icon="access_time"
                   v-model="appointment.endHour"
                   label="Ending Hour"
@@ -161,15 +169,22 @@
             </v-menu>
             <v-select
               v-model="appointment.participants"
-              :items="participantsNames"
+              :items="participants"
+              item-text="name"
+              item-value="participantId"
               multiple
               append-icon="mdi-plus"
               label="Select participants"
             ></v-select>
-            <v-btn color="primary" class="mr-4" @click.stop="reset"
+            <v-btn
+              id="btn-close"
+              color="primary"
+              class="mr-4"
+              @click.stop="reset"
               >CLOSE
             </v-btn>
             <v-btn
+              id="btn-save-update"
               color="primary"
               class="mr-4"
               @click.stop="
@@ -323,8 +338,7 @@ export default {
           const objectToSend = {};
           Object.assign(objectToSend, this.appointment);
           this.$store.dispatch("addScheduledAppointment", objectToSend);
-         // console.log("sending appointment");
- 
+          // console.log("sending appointment");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
@@ -332,17 +346,17 @@ export default {
       }
     },
     reset() {
-      //this.$refs.form.reset();
+      this.$refs.form.reset();
       this.$emit("close");
     },
- // Calculo de lo eventos reccurentes
+    // Calculo de lo eventos reccurentes
     recurrentevents() {
       let startDate = new Date(this.appointment.date);
       let endDate = new Date(this.appointment.endDate);
 
       // Evento recurrente diario
       if (this.active === "daily") {
-         this.recurrentdates = [];
+        this.recurrentdates = [];
         let nextOccurrence = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
@@ -357,13 +371,13 @@ export default {
           );
           let date = nextOccurrence.toISOString().substr(0, 10);
           console.log("Fecha del siguiente appointment: " + date);
-          //Insertando todas la fechas calculadas en un array 
+          //Insertando todas la fechas calculadas en un array
           this.recurrentdates.push({
             date
           });
           console.log("Fecha de fin :" + endDate);
         }
-         // Evento recurrente semanal
+        // Evento recurrente semanal
       } else if (this.active === "weekly") {
         let weeklyEndDate = new Date(
           endDate.getFullYear(),
@@ -377,11 +391,11 @@ export default {
           startDate.getDate() + 8
         );
         while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
-          console.log("Fecha Inicial----" + startDate)
+          console.log("Fecha Inicial----" + startDate);
           startDate = nextOccurrence;
           console.log("Fecha del siguiente appointment: " + nextOccurrence);
           if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
-            console.log("La fecha sobrepasa la fecha limite")
+            console.log("La fecha sobrepasa la fecha limite");
           } else {
             let date = nextOccurrence.toISOString().substr(0, 10);
             this.recurrentdates.push({
@@ -396,14 +410,14 @@ export default {
             startDate.getDate() + 7
           );
         }
-  // Evento recurrente mensual
+        // Evento recurrente mensual
       } else if (this.active === "monthly") {
         let monthlyStartDate = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
           startDate.getDate() + 1
         );
-        let nextOccurrence =  new Date(
+        let nextOccurrence = new Date(
           monthlyStartDate.getFullYear(),
           monthlyStartDate.getMonth(),
           monthlyStartDate.getDate() + 30
@@ -450,7 +464,7 @@ export default {
           this.getDaysinMonth(
             monthlyStartDate.getMonth(),
             monthlyStartDate.getFullYear()
-          ) === 31 &&  
+          ) === 31 &&
           this.getDaysinMonth(
             nextOccurrence.getMonth(),
             nextOccurrence.getFullYear()
@@ -458,10 +472,10 @@ export default {
         ) {
           nextOccurrence = new Date(
             monthlyStartDate.getFullYear(),
-            monthlyStartDate.getMonth() ,
+            monthlyStartDate.getMonth(),
             monthlyStartDate.getDate() + 31
           );
-        }  else {
+        } else {
           nextOccurrence = new Date(
             monthlyStartDate.getFullYear(),
             monthlyStartDate.getMonth(),
@@ -500,7 +514,7 @@ export default {
             ) {
               nextOccurrence = new Date(
                 monthlyStartDate.getFullYear(),
-                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getMonth(),
                 monthlyStartDate.getDate() + 31
               );
             } else if (
@@ -531,7 +545,7 @@ export default {
             ) {
               nextOccurrence = new Date(
                 monthlyStartDate.getFullYear(),
-                monthlyStartDate.getMonth() ,
+                monthlyStartDate.getMonth(),
                 monthlyStartDate.getDate() + 31
               );
             } else if (
@@ -566,18 +580,17 @@ export default {
       this.recurrentevents();
       this.recurrentdates.forEach(element => {
         console.log("Fechas" + element.date);
-        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente 
+        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente
         this.dispatchAction();
       });
     },
     getDaysinMonth(month, year) {
       return new Date(year, month + 1, 0).getDate();
     }
-
   },
 
   mounted() {
     // this.initializeData();
-    }
+  }
 };
 </script>
