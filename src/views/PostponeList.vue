@@ -3,7 +3,14 @@
     <v-card-title>
       Postpone List
     </v-card-title>
-
+    <v-btn
+      class="buttonBack"
+      color="orange darken-2"
+      dark
+      @click="redirectToView('organizer')"
+    >
+      <v-icon dark left>mdi-arrow-left</v-icon>Back
+    </v-btn>
     <v-data-table
       :headers="headers"
       :items="postponedAppointments"
@@ -85,6 +92,9 @@ export default {
       const index = this.getPostponeList.indexOf(item);
       this.getPostponeList.splice(index, 1);
       console.log("tamaño: " + this.getPostponeList.length);
+    },
+    redirectToView(route) {
+      this.$router.push(`/${route}`);
     }
   }
 };
