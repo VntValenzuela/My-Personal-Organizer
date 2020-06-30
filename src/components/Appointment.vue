@@ -47,7 +47,7 @@
               </template>
               <v-date-picker
                 :no-title="true"
-                min="2020-06-23"
+                min="2019-01-23"
                 max="2020-12-31"
                 v-model="appointment.date"
                 @input="menu0 = false"
@@ -76,7 +76,7 @@
                 </template>
                 <v-date-picker
                   :no-title="true"
-                  min="2020-06-23"
+                  min="2019-01-23"
                   max="2020-12-31"
                   v-model="appointment.endDate"
                   @input="menu3 = false"
@@ -334,7 +334,7 @@ export default {
           const objectToSend = {};
           Object.assign(objectToSend, this.appointment);
           this.$store.dispatch("addScheduledAppointment", objectToSend);
-         // console.log("sending appointment");
+          // console.log("sending appointment");
         } else {
           this.$store.dispatch("updateScheduledAppointment", this.appointment);
         }
@@ -345,7 +345,7 @@ export default {
       //this.$refs.form.reset();
       this.$emit("close");
     },
- // Calculo de lo eventos reccurentes
+    // Calculo de lo eventos reccurentes
     recurrentevents(sDate, eDate) {
       let startDate = new Date(sDate);
       let endDate = new Date(eDate);
@@ -366,11 +366,11 @@ export default {
             startDate.getDate() + 1
           );
           let date = nextOccurrence.toISOString().substr(0, 10);
-          //Insertando todas la fechas calculadas en un array 
+          //Insertando todas la fechas calculadas en un array
           this.recurrentdates.push({
             date
           });
-         // console.log("Fecha de fin :" + endDate);
+          // console.log("Fecha de fin :" + endDate);
         }
         // Evento recurrente semanal
       } else if (this.active === "weekly") {
@@ -388,7 +388,7 @@ export default {
         while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
           startDate = nextOccurrence;
           if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
-            console.log("La fecha sobrepasa la fecha limite")
+            console.log("La fecha sobrepasa la fecha limite");
           } else {
             let date = nextOccurrence.toISOString().substr(0, 10);
             this.recurrentdates.push({
@@ -410,10 +410,10 @@ export default {
           startDate.getMonth(),
           startDate.getDate() + 1
         );
-        let nextOccurrence =  new Date(
+        let nextOccurrence = new Date(
           monthlyStartDate.getFullYear(),
           monthlyStartDate.getMonth(),
-          monthlyStartDate.getDate() + 30
+          monthlyStartDate.getDate() + 28
         );
         let monthlyEndDate = new Date(
           endDate.getFullYear(),
@@ -452,12 +452,150 @@ export default {
             monthlyStartDate.getMonth(),
             monthlyStartDate.getDate() + 31
           );
+        }
+        ///////////////////////// Febrero 29 dias
+        else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() === 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 29
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 29
+          );
         } else if (
           this.getDaysinMonth(
             monthlyStartDate.getMonth(),
             monthlyStartDate.getFullYear()
           ) === 31 &&
-          monthlyStartDate.getDate() == 31 &&
+          monthlyStartDate.getDate() === 30 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 29
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 29
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 29
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 31
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 29
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 29
+          );
+        }
+        ///////////////////// Febrero
+        else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() === 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 28
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 28
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() === 30 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 28
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 29
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() === 29 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 28
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 30
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 28
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 31
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 28
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 28
+          );
+        }
+        //////////////////////
+        else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
+          monthlyStartDate.getDate() === 31 &&
           this.getDaysinMonth(
             nextOccurrence.getMonth(),
             nextOccurrence.getFullYear()
@@ -472,7 +610,7 @@ export default {
           this.getDaysinMonth(
             monthlyStartDate.getMonth(),
             monthlyStartDate.getFullYear()
-          ) === 31 &&  
+          ) === 31 &&
           this.getDaysinMonth(
             nextOccurrence.getMonth(),
             nextOccurrence.getFullYear()
@@ -483,7 +621,7 @@ export default {
             monthlyStartDate.getMonth(),
             monthlyStartDate.getDate() + 31
           );
-        }  else {
+        } else {
           nextOccurrence = new Date(
             monthlyStartDate.getFullYear(),
             monthlyStartDate.getMonth(),
@@ -514,7 +652,7 @@ export default {
                 monthlyStartDate.getMonth(),
                 monthlyStartDate.getFullYear()
               ) === 31 &&
-              monthlyStartDate.getDate() == 31 &&
+              monthlyStartDate.getDate() === 31 &&
               this.getDaysinMonth(
                 nextOccurrence.getMonth(),
                 nextOccurrence.getFullYear()
@@ -545,7 +683,7 @@ export default {
                 monthlyStartDate.getMonth(),
                 monthlyStartDate.getFullYear()
               ) === 31 &&
-              monthlyStartDate.getDate() == 31 &&
+              monthlyStartDate.getDate() === 31 &&
               this.getDaysinMonth(
                 nextOccurrence.getMonth(),
                 nextOccurrence.getFullYear()
@@ -587,6 +725,202 @@ export default {
                 monthlyStartDate.getMonth(),
                 monthlyStartDate.getDate() + 31
               );
+            }
+            ///////////// Febrero 29 dias
+            else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 29
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 29
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() === 30 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 29
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 29
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 29 &&
+              previousOccurence.getDate() === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 29 &&
+              previousOccurence.getDate() === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 29
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 29
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 29
+              );
+            }
+            /////////////////  Febrero
+            else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 28 &&
+              previousOccurence.getDate() === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 28 &&
+              previousOccurence.getDate() === 30
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 28 &&
+              previousOccurence.getDate() === 29
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 29
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 28
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 28
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() === 30 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 28
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 29
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              monthlyStartDate.getDate() === 29 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 28
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 30
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 28
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 28
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 28
+              );
             } else {
               nextOccurrence = new Date(
                 monthlyStartDate.getFullYear(),
@@ -596,12 +930,15 @@ export default {
             }
           }
         }
-      } 
+      }
     },
     //Por cada fecha que hay en el array creo un appointment
     addRecurrentEvents() {
       this.recurrentevents(this.appointment.date, this.appointment.endDate);
-      if (this.recurrentdates.length < 1) {
+      if (
+        this.recurrentdates === undefined ||
+        this.recurrentdates.length == 0
+      ) {
         console.log("No hay datos");
       } else {
         this.recurrentdates.forEach(element => {
