@@ -19,7 +19,7 @@
       class="postponeList"
     >
       <template v-slot:item.pActivate="{ item }">
-        <v-icon small class="mr-2" @click="Respone(selectedEvent, true, item)">
+        <v-icon small class="mr-2" @click="Respone(selectedEvent, true)">
           mdi-pencil
         </v-icon>
         <Appointment
@@ -54,6 +54,7 @@ export default {
       singleSelect: "",
       postpone: {},
       selectedEvent: {},
+      item: {},
       headers: [
         {
           text: "Name",
@@ -76,12 +77,11 @@ export default {
     }
   },
   methods: {
-    Respone(selectedAppointment, newAppointment, item) {
+    Respone(selectedAppointment, newAppointment) {
       if (newAppointment) {
         this.selectedAppointment = {};
       } else {
         this.selectedAppointment = selectedAppointment;
-        this.deleteItem(item);
       }
       this.newAppointment = newAppointment;
       this.dialog = true;
@@ -91,7 +91,6 @@ export default {
       this.$store.dispatch("deletePostponeAppointment", this.postpone);
       const index = this.getPostponeList.indexOf(item);
       this.getPostponeList.splice(index, 1);
-      console.log("tamaño: " + this.getPostponeList.length);
     },
     redirectToView(route) {
       this.$router.push(`/${route}`);
