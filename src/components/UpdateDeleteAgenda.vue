@@ -41,10 +41,12 @@
         <v-btn color="gray darken-1" @click.stop="show = false">CANCEL</v-btn>
         <v-spacer />
         <v-btn color="blue darken-1" @click.stop="updaagenda()"
-          >UPDATE<v-icon>mdi-wrench</v-icon></v-btn
+          >UPDATE<v-icon>mdi-pencil</v-icon></v-btn
         >
         <v-spacer />
         <v-btn
+          id="de"
+          class="delete"
           color="red darken-1"
           :disabled="this.appointments.length != 0"
           @click.stop="deleagenda()"
@@ -98,10 +100,11 @@ export default {
       }
     },
     deleagenda() {
-      this.$emit("deleagenda", {
-        agendaId: this.agendaId,
-        appointments: this.appointments
-      });
+      if (this.appointments.length == 0) {
+        this.$emit("deleagenda", this.agendaId);
+      } else {
+        alert("You can't delete the agenda");
+      }
     },
     closeDialog() {
       this.$emit("close-update");

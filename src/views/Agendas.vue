@@ -111,9 +111,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getAgendas"]),
+    ...mapGetters(["getAgendas", "getScheduledAppointments"]),
     agendas() {
       return this.getAgendas;
+    },
+    scheduledAppointments() {
+      return this.getScheduledAppointments;
     }
   },
   methods: {
@@ -147,14 +150,7 @@ export default {
       }
     },
     deleagenda(agendaId) {
-      const foudAgendatIndex = this.agendas.findIndex(
-        agendaFind => agendaFind.agendaId === agendaId
-      );
-      if (this.agendas[foudAgendatIndex].appointments.length === 0) {
-        this.deleteAgenda(agendaId);
-      } else {
-        alert("Yout can't delete this agenda");
-      }
+      this.deleteAgenda(agendaId);
     },
     closeCreate() {
       this.dialogDelete = false;
@@ -163,11 +159,12 @@ export default {
       this.dialogDelete = false;
     },
     openUpdateDeleteDialog(agenda) {
+      agenda.appointments = this.getA(agenda.agendaId);
       this.$refs.updateDeleteDialog.setAgenda(agenda);
       this.dialogUpdateDelete = true;
     },
     redirectToParticipant() {
-      this.$router.push("Participant");
+      this.$router.push("participant");
     },
     getContrastYIQ(hexcolor) {
       hexcolor = hexcolor.slice(1);
@@ -176,6 +173,11 @@ export default {
       var b = parseInt(hexcolor.substr(4, 2), 16);
       var yiq = (r * 299 + g * 587 + b * 114) / 1000;
       return yiq >= 128 ? "black" : "white";
+    },
+    getA(agendaId) {
+      return this.scheduledAppointments.filter(
+        scheduledAppointment => scheduledAppointment.agendaId == agendaId
+      );
     }
   }
 };
