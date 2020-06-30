@@ -2,7 +2,7 @@ export default {
   participants: [
     {
       participantId: 1,
-      name: "Fernando Perez Rocha",
+      name: "Andres Perez Rocha",
       contactNumber: 71234567,
       gender: "Male"
     },
