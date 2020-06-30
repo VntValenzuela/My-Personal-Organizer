@@ -1,14 +1,9 @@
 <template>
   <div>
-    <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="600px"
-      class="dialog-element"
-    >
+    <v-dialog v-model="dialog" persistent max-width="600px" id="dialog-element">
       <v-card>
         <v-container>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form ref="form" v-model="valid">
             <v-text-field
               id="name-appointment"
               v-model="appointment.name"
@@ -63,12 +58,7 @@
                 @input="menu0 = false"
               ></v-date-picker>
             </v-menu>
-            <v-container fluid>
-              <v-switch
-                :label="`Recurrent: ${recurrentToggle}`"
-                v-model="recurrentToggle"
-              ></v-switch>
-            </v-container>
+            <v-container fluid> </v-container>
             <div id="RecurrentDIV">
               <v-menu
                 v-model="menu3"
@@ -86,6 +76,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    :disabled="validated == 0"
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -100,6 +91,7 @@
                 <v-radio label="Daily:" value="daily"></v-radio>
                 <v-radio label="Weekly" value="weekly"></v-radio>
                 <v-radio label="Monthly" value="monthly"></v-radio>
+                <v-radio label="None" value="none"></v-radio>
               </v-radio-group>
             </div>
             <v-menu
@@ -121,7 +113,11 @@
                   readonly
                   v-bind="attrs"
                   v-on="on"
-                  :rules="[]"
+                  :rules="[
+                    required('Start Hour'),
+                    higherAgenda('Starting'),
+                    lowerAgenda('Starting')
+                  ]"
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -207,6 +203,7 @@ export default {
   name: "Appointment",
   data() {
     return {
+      // dialog: false,
       color: "#1976D2",
       time: null,
       menu0: false,
@@ -216,6 +213,7 @@ export default {
       valid: false,
       active: 0,
       recurrentToggle: false,
+      validated: 0,
       required(propertyType) {
         return value =>
           (value && (value + "").length > 0) || `${propertyType} is required`;
@@ -250,12 +248,15 @@ export default {
     };
   },
   watch: {
-    recurrentToggle(newValue) {
-      var x = document.getElementById("RecurrentDIV");
-      if (x.style.display === "block") {
-        x.style.display = "none";
-      } else {
-        x.style.display = "block";
+    active(newValue) {
+      if (newValue === "none") {
+        this.validated = 0;
+      } else if (
+        newValue === "daily" ||
+        newValue == "weekly" ||
+        newValue == "monthly"
+      ) {
+        this.validated = 1;
       }
       console.log(newValue);
     }
@@ -277,6 +278,7 @@ export default {
           endHour: null,
           agendaId: null,
           participants: [],
+          endDate: null,
           recurrentdates: []
         };
       }
@@ -311,14 +313,25 @@ export default {
       return this.participants.map(participant => participant.name);
     },
     appointment() {
+      /*console.log(
+        `APPOINTMENT-> Change ${JSON.stringify(this.selectedAppointment)}`
+      );*/
       return Object.assign({}, this.selectedAppointment);
     }
   },
   methods: {
     addScheduledAppointment() {
-      this.generateNewId();
-      this.$store.dispatch("addScheduledAppointment", this.appointment);
-      this.reset();
+      if (this.validAgendaHours()) {
+        this.generateNewId();
+        console.log("Adding Appointment" + JSON.stringify(this.appointment));
+        this.$store.dispatch("addScheduledAppointment", this.appointment);
+      }
+    },
+    updateScheduledAppointment() {
+      if (this.validAgendaHours()) {
+        console.log("Updating Event" + JSON.stringify(this.appointment.id));
+        this.$store.dispatch("updateScheduledAppointment", this.appointment);
+      }
     },
     generateNewId() {
       const numberOfAppointments = this.appointments.length;
@@ -349,10 +362,28 @@ export default {
       this.$refs.form.reset();
       this.$emit("close");
     },
+    //same logis as form validation in dialog
+    validAgendaHours() {
+      if (this.newAppointment) {
+        const value = this.appointment.startHour;
+        let agenda = {};
+        let msg = "Select a Agenda for this Appointment";
+        if (typeof this.appointment.agendaId === "string") {
+          agenda = this.agendas.find(
+            agenda => agenda.agendaId === this.appointment.agendaId
+          );
+          msg = `Starting Hour Hour must be higher than Agenda Starting hour ${agenda.start}`;
+        }
+        console.log(msg);
+        return value && (value + "").length > 0 && value >= agenda.start;
+      } else {
+        return true;
+      }
+    },
     // Calculo de lo eventos reccurentes
-    recurrentevents() {
-      let startDate = new Date(this.appointment.date);
-      let endDate = new Date(this.appointment.endDate);
+    recurrentevents(sDate, eDate) {
+      let startDate = new Date(sDate);
+      let endDate = new Date(eDate);
 
       // Evento recurrente diario
       if (this.active === "daily") {
@@ -370,12 +401,11 @@ export default {
             startDate.getDate() + 1
           );
           let date = nextOccurrence.toISOString().substr(0, 10);
-          console.log("Fecha del siguiente appointment: " + date);
           //Insertando todas la fechas calculadas en un array
           this.recurrentdates.push({
             date
           });
-          console.log("Fecha de fin :" + endDate);
+          // console.log("Fecha de fin :" + endDate);
         }
         // Evento recurrente semanal
       } else if (this.active === "weekly") {
@@ -391,9 +421,7 @@ export default {
           startDate.getDate() + 8
         );
         while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
-          console.log("Fecha Inicial----" + startDate);
           startDate = nextOccurrence;
-          console.log("Fecha del siguiente appointment: " + nextOccurrence);
           if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
             console.log("La fecha sobrepasa la fecha limite");
           } else {
@@ -434,6 +462,21 @@ export default {
             monthlyStartDate.getFullYear()
           ) === 31 &&
           monthlyStartDate.getDate() == 31 &&
+          this.getDaysinMonth(
+            nextOccurrence.getMonth(),
+            nextOccurrence.getFullYear()
+          ) === 31
+        ) {
+          nextOccurrence = new Date(
+            monthlyStartDate.getFullYear(),
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getDate() + 31
+          );
+        } else if (
+          this.getDaysinMonth(
+            monthlyStartDate.getMonth(),
+            monthlyStartDate.getFullYear()
+          ) === 31 &&
           this.getDaysinMonth(
             nextOccurrence.getMonth(),
             nextOccurrence.getFullYear()
@@ -522,6 +565,21 @@ export default {
                 monthlyStartDate.getMonth(),
                 monthlyStartDate.getFullYear()
               ) === 31 &&
+              this.getDaysinMonth(
+                nextOccurrence.getMonth(),
+                nextOccurrence.getFullYear()
+              ) === 31
+            ) {
+              nextOccurrence = new Date(
+                monthlyStartDate.getFullYear(),
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getDate() + 31
+              );
+            } else if (
+              this.getDaysinMonth(
+                monthlyStartDate.getMonth(),
+                monthlyStartDate.getFullYear()
+              ) === 31 &&
               monthlyStartDate.getDate() == 31 &&
               this.getDaysinMonth(
                 nextOccurrence.getMonth(),
@@ -577,20 +635,20 @@ export default {
     },
     //Por cada fecha que hay en el array creo un appointment
     addRecurrentEvents() {
-      this.recurrentevents();
-      this.recurrentdates.forEach(element => {
-        console.log("Fechas" + element.date);
-        this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente
-        this.dispatchAction();
-      });
+      this.recurrentevents(this.appointment.date, this.appointment.endDate);
+      if (this.recurrentdates.length < 1) {
+        console.log("No hay datos");
+      } else {
+        this.recurrentdates.forEach(element => {
+          console.log("Fechas" + element.date);
+          this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente
+          this.dispatchAction();
+        });
+      }
     },
     getDaysinMonth(month, year) {
       return new Date(year, month + 1, 0).getDate();
     }
-  },
-
-  mounted() {
-    // this.initializeData();
   }
 };
 </script>

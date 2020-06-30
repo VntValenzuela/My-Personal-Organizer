@@ -35,10 +35,6 @@ export default {
       }
     }
   },
-  /*
-  mutateAddParticipant(state, participantToAdd) {
-    
-  },*/
   mutateUpdateParticipant(state, participantToUpdate) {
     var index;
     state.participants.forEach(participant => {
@@ -61,10 +57,6 @@ export default {
       }
     });
   },
-  /*
-  mutateDeleteParticipantFromAppointment(state, participantToDelete) {
-    
-  }*/
   //SCHEDULED APPOINTMENTS
   addScheduledAppointment(state, newScheduledAppointment) {
     state.scheduledAppointments.push(newScheduledAppointment);
@@ -76,6 +68,7 @@ export default {
     );
   },
   updateScheduledAppointment(state, updatedScheduledAppointment) {
+    console.log("Updating in store" + updatedScheduledAppointment.name);
     const updateIndex = state.scheduledAppointments.findIndex(
       scheduledAppointment =>
         scheduledAppointment.id === updatedScheduledAppointment.id

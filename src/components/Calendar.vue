@@ -52,7 +52,7 @@
         rounded
         large
         color="white"
-        class="black--text"
+        class="black--text ml-4 mt-4"
         @click="sendData(selectedAppointment, true)"
       >
         <v-icon large color="light-blue" left>mdi-plus</v-icon> Create
@@ -92,7 +92,11 @@
       <v-subheader>Agendas</v-subheader>
       <v-list flat>
         <v-list-item-group v-model="selectedAgendas" multiple color="indigo">
-          <v-list-item v-for="agenda in agendas" :key="agenda.id">
+          <v-list-item
+            v-for="agenda in agendas"
+            :key="agenda.id"
+            class="checkbox-for-agenda"
+          >
             <template v-slot:default="{ active }">
               <v-list-item-action>
                 <v-checkbox
@@ -101,7 +105,9 @@
                 ></v-checkbox>
               </v-list-item-action>
 
-              <v-list-item-content>
+              <v-list-item-content
+                :id="`checkbox-${agenda.name.toLowerCase()}`"
+              >
                 <v-list-item-title>{{ agenda.name }}</v-list-item-title>
                 <v-list-item-subtitle>{{
                   agenda.description
@@ -220,7 +226,11 @@ export default {
     filteredEvents: []
   }),
   computed: {
-    ...mapGetters(["getScheduledAppointments", "getAgendas"]),
+    ...mapGetters([
+      "getScheduledAppointments",
+      "getAgendas",
+      "getParticipants"
+    ]),
     appointments() {
       return this.getScheduledAppointments;
     },

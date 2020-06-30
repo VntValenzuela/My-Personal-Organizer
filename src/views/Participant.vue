@@ -1,5 +1,19 @@
 <template>
-  <div class="participants">
+  <div id="participantsDiv" class="participants">
+    <div>
+      <v-btn
+        id="redirectToHome"
+        class="ma-2"
+        color="#DAA520"
+        fab
+        dark
+        fixed
+        right
+        @click.stop="redirectToHome()"
+      >
+        <v-icon large>home</v-icon>
+      </v-btn>
+    </div>
     <v-container class="my-10" grid-list-md>
       <h1><b>PARTICIPANTS</b></h1>
       <br />
@@ -23,25 +37,24 @@
           v-for="(participant, index) in participants"
           :key="index"
         >
-          <v-card class="text-center" max-width="250" color="#DFE1E5">
+          <v-card class="ma-3" max-width="250" color="#DFE1E5">
             <v-container>
               <v-img
                 v-if="participant.gender === 'Male'"
                 src="../assets/male.png"
-                class="grey darken-4"
+                class="ma-3"
               ></v-img>
               <v-img
                 v-if="participant.gender === 'Female'"
                 src="../assets/female.png"
-                class="grey darken-4"
+                class="ma-3"
               ></v-img>
-              <!-- <v-icon light :size="60" right>mdi-account-circle</v-icon> -->
             </v-container>
             <v-card-title>
               <div class="text-center">{{ participant.name }}</div>
             </v-card-title>
             <v-card-subtitle>
-              <div>{{ participant.contactNumber }}</div>
+              <div class="text-center">{{ participant.contactNumber }}</div>
             </v-card-subtitle>
             <v-container center>
               <v-btn
@@ -59,7 +72,6 @@
                 id="delete"
                 color="#E23C3C"
                 :rounded="true"
-                v-if="participant.upcomingAppointments.length === 0"
                 @click.stop="
                   openDeleteParticipantDialog(participant.participantId)
                 "
@@ -105,6 +117,9 @@ export default {
     },
     openDeleteParticipantDialog(participantId) {
       this.$refs.participantDialogs.openDelete(participantId);
+    },
+    redirectToHome() {
+      this.$router.push("/");
     }
   }
 };
