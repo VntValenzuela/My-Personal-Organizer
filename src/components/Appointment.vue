@@ -1044,6 +1044,7 @@ export default {
           console.log("Fechas" + element.date);
           this.appointment.date = element.date; // Asigno a cada appoint su fecha correspondiente
           this.dispatchAction();
+          this.recurrentdates = [];
         });
       }
       //this.reset();
