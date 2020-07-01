@@ -1,14 +1,32 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Agendas from "../views/Agendas.vue";
+import Organizer from "../views/Organizer.vue";
+import ParticipantView from "../views/Participant.vue";
+import PostponeListView from "../views/PostponeList.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "Agendas",
+    component: Agendas
+  },
+  {
+    path: "/organizer",
+    name: "Organizer",
+    component: Organizer
+  },
+  {
+    path: "/postponeList",
+    name: "PostponeList",
+    component: PostponeListView
+  },
+  {
+    path: "/participant",
+    name: "Participant",
+    component: ParticipantView
   },
   {
     path: "/about",
