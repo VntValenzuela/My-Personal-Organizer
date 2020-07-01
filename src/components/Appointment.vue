@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="600px" id="dialog-element">
       <v-card>
         <v-container>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               id="name-appointment"
               v-model="appointment.name"
@@ -390,19 +390,21 @@ export default {
           // console.log("sending appointment");
           if (this.postpone) {
             this.$emit("save");
-            this.postpone = true;
+            this.postpone = false;
           }
+          this.$emit("close");
         } else {
           const objectToSend = {};
           Object.assign(objectToSend, this.appointment);
           this.$store.dispatch("updateScheduledAppointment", objectToSend);
+          this.reset();
         }
+        //this.reset();
       }
-      this.reset();
     },
     reset() {
       this.$refs.form.resetValidation();
-      this.active = "none";
+      //this.active = "none";
       this.$emit("close");
     },
     //same logis as form validation in dialog
@@ -1025,7 +1027,7 @@ export default {
           this.dispatchAction();
         });
       }
-      this.reset();
+      //this.reset();
     },
     getDaysinMonth(month, year) {
       return new Date(year, month + 1, 0).getDate();
