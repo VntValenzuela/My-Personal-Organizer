@@ -28,36 +28,7 @@ export default {
       appointments: []
     }
   ],
-  participants: [
-    {
-      participantId: 1,
-      name: "Juan Perez Rocha",
-      contactNumber: 71234567,
-      upcomingAppointments: [],
-      gender: "Male"
-    },
-    {
-      participantId: 2,
-      name: "Andrea Paredes López",
-      contactNumber: 72244661,
-      upcomingAppointments: [],
-      gender: "Female"
-    },
-    {
-      participantId: 3,
-      name: "Fernando Torrez Siles",
-      contactNumber: 73467812,
-      upcomingAppointments: [],
-      gender: "Male"
-    },
-    {
-      participantId: 4,
-      name: "Carla Andrade Rojas",
-      contactNumber: 79983812,
-      upcomingAppointments: [],
-      gender: "Female"
-    }
-  ],
+  participants: [],
   scheduledAppointments: [
     {
       id: "SAP-0001",
@@ -67,7 +38,7 @@ export default {
       startHour: "10:00",
       endHour: "11:00",
       agendaId: "A-1",
-      participants: ["PART-001", "PART-002"]
+      participants: [1, 2]
     },
     {
       id: "SAP-0002",
@@ -91,24 +62,12 @@ export default {
     },
     {
       name: "Sleep",
-      description: "I need to go to dentist"
+      description: "I need to go to sleep"
     },
     {
       name: "Play",
-      description: "I need to go to GYM"
+      description: "I need to go to play"
     }
   ],
-  recursiveAppointments: [
-    {
-      name: "Dentist",
-      description: "I need to go to dentist",
-      date: "06/19/2020",
-      endDate: "12/18/2020",
-      frequency: "Day|Week|Month",
-      startHour: "10:00",
-      endHour: "11:00",
-      agendaId: "A-1",
-      participants: ["PART-001"]
-    }
-  ]
+  recursiveAppointments: []
 };

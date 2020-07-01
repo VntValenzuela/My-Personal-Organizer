@@ -1,41 +1,43 @@
 <template>
-  <v-card>
-    <v-card-title>
-      Postpone List
-    </v-card-title>
-    <v-btn
-      class="buttonBack"
-      color="orange darken-2"
-      dark
-      @click="redirectToView('organizer')"
-    >
-      <v-icon dark left>mdi-arrow-left</v-icon>Back
-    </v-btn>
-    <v-data-table
-      :headers="headers"
-      :items="postponedAppointments"
-      :single-select="singleSelect"
-      v-model="table"
-      class="postponeList"
-    >
-      <template v-slot:item.pActivate="{ item }">
-        <v-icon small class="mr-2" @click="Respone(selectedEvent, true)">
-          mdi-pencil
-        </v-icon>
-        <Appointment
-          :selectedAppointment="selectedAppointment"
-          :dialog="dialog"
-          :newAppointment="newAppointment"
-          @close="dialog = false"
-          @save="deleteItem(item)"
-        />
-
-        <v-icon small @click="deleteItem(item)">
-          mdi-delete
-        </v-icon>
-      </template>
-    </v-data-table>
-  </v-card>
+  <div>
+    <v-card>
+      <v-card-title>
+        Postpone List
+      </v-card-title>
+      <v-btn
+        class="buttonBack"
+        color="orange darken-2"
+        dark
+        @click="redirectToView('organizer')"
+      >
+        <v-icon dark left>mdi-arrow-left</v-icon>Back
+      </v-btn>
+      <v-data-table
+        :headers="headers"
+        :items="table"
+        :single-select="singleSelect"
+        v-model="postponedAppointments"
+        class="postponeList"
+      >
+        <template v-slot:item.pActivate="{ item }">
+          <v-icon small class="mr-2" @click="respone(item, true)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small @click="deleteItem(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
+    </v-card>
+    <Appointment
+      ref="appointmentDialog"
+      :selectedAppointment="selectedPostpone"
+      :dialog="dialog"
+      :newAppointment="newAppointment"
+      @close="dialog = false"
+      @save="deleteItem(selectedPostpone)"
+    />
+  </div>
 </template>
 
 <script>
@@ -53,7 +55,7 @@ export default {
       dialog: false,
       singleSelect: "",
       postpone: {},
-      selectedEvent: {},
+      selectedPostpone: {},
       item: {},
       headers: [
         {
@@ -72,25 +74,27 @@ export default {
     ...mapGetters(["getPostponeList"]),
     table() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.postponedAppointments = this.getPostponeList;
+      //this.postponedAppointments = this.getPostponeList;
       return this.getPostponeList;
     }
   },
   methods: {
-    Respone(selectedAppointment, newAppointment) {
-      if (newAppointment) {
-        this.selectedAppointment = {};
+    respone(selectedPostpone, newAppointment) {
+      /*if (newAppointment) {
+        this.selectedPostpone = {};
       } else {
-        this.selectedAppointment = selectedAppointment;
-      }
+        this.selectedPostpone = selectedPostpone;
+      }*/
+      this.selectedPostpone = selectedPostpone;
       this.newAppointment = newAppointment;
+      this.$refs.appointmentDialog.initPostpone();
       this.dialog = true;
     },
     deleteItem(item) {
       this.postpone = { name: item.name, description: item.description };
-      this.$store.dispatch("deletePostponeAppointment", this.postpone);
-      const index = this.getPostponeList.indexOf(item);
-      this.getPostponeList.splice(index, 1);
+      this.$store.dispatch("deletePostponeAppointment", this.postpone.name);
+      //const index = this.getPostponeList.indexOf(item);
+      //this.getPostponeList.splice(index, 1);
     },
     redirectToView(route) {
       this.$router.push(`/${route}`);

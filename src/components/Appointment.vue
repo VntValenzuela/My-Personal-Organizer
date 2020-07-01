@@ -10,6 +10,11 @@
               autocomplete="off"
               label="Appointment Name"
               :rules="[required('Name')]"
+              counter
+              maxlength="15"
+              outlined
+              rounded
+              dense
             >
             </v-text-field>
             <v-text-field
@@ -18,6 +23,11 @@
               autocomplete="off"
               label="Description"
               :rules="[required('Description')]"
+              counter
+              maxlength="30"
+              outlined
+              rounded
+              dense
             >
             </v-text-field>
             <v-select
@@ -28,6 +38,9 @@
               item-value="agendaId"
               label="Choose an Agenda"
               :rules="[required('Agenda')]"
+              outlined
+              rounded
+              dense
             ></v-select>
             <v-menu
               class="menu-date"
@@ -48,6 +61,9 @@
                   v-bind="attrs"
                   v-on="on"
                   :rules="[required('Date')]"
+                  outlined
+                  rounded
+                  dense
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -60,7 +76,14 @@
             </v-menu>
             <v-container fluid> </v-container>
             <div id="RecurrentDIV">
+              <v-radio-group v-model="active" row>
+                <v-radio label="Daily:" value="daily"></v-radio>
+                <v-radio label="Weekly" value="weekly"></v-radio>
+                <v-radio label="Monthly" value="monthly"></v-radio>
+                <v-radio label="None" value="none"></v-radio>
+              </v-radio-group>
               <v-menu
+                v-if="active !== 'none'"
                 v-model="menu3"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -77,6 +100,9 @@
                     v-bind="attrs"
                     v-on="on"
                     :disabled="validated == 0"
+                    outlined
+                    rounded
+                    dense
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -87,12 +113,6 @@
                   @input="menu3 = false"
                 ></v-date-picker>
               </v-menu>
-              <v-radio-group v-model="active" row>
-                <v-radio label="Daily:" value="daily"></v-radio>
-                <v-radio label="Weekly" value="weekly"></v-radio>
-                <v-radio label="Monthly" value="monthly"></v-radio>
-                <v-radio label="None" value="none"></v-radio>
-              </v-radio-group>
             </div>
             <v-menu
               ref="menu1"
@@ -118,6 +138,9 @@
                     higherAgenda('Starting'),
                     lowerAgenda('Starting')
                   ]"
+                  outlined
+                  rounded
+                  dense
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -153,6 +176,9 @@
                     higherAgenda('Ending'),
                     lowerAgenda('Ending')
                   ]"
+                  outlined
+                  rounded
+                  dense
                 ></v-text-field>
               </template>
               <v-time-picker
@@ -171,6 +197,9 @@
               multiple
               append-icon="mdi-plus"
               label="Select participants"
+              outlined
+              rounded
+              chips
             ></v-select>
             <v-btn
               id="btn-close"
@@ -215,6 +244,7 @@ export default {
       recurrentToggle: false,
       validated: 0,
       recurrentdates: [],
+      postpone: false,
       required(propertyType) {
         return value =>
           (value && (value + "").length > 0) || `${propertyType} is required`;
@@ -343,6 +373,12 @@ export default {
       }
       this.appointment.id = `SAP-${newId}`;
     },
+    initPostpone() {
+      this.postpone = true;
+      //console.log(postponeAppoitnment);
+      //this.appointment.name = postponeAppoitnment.name;
+      //this.appointment.description = postponeAppoitnment.description;
+    },
     dispatchAction() {
       if (this.$refs.form.validate()) {
         if (this.newAppointment) {
@@ -351,25 +387,24 @@ export default {
           const objectToSend = {};
           Object.assign(objectToSend, this.appointment);
           this.$store.dispatch("addScheduledAppointment", objectToSend);
-<<<<<<< HEAD
-          this.$emit("save");
-=======
->>>>>>> Task-RecursiveAppointment-F
           // console.log("sending appointment");
+          if (this.postpone) {
+            this.$emit("save");
+            this.postpone = true;
+          }
         } else {
-          this.$store.dispatch("updateScheduledAppointment", this.appointment);
-          this.reset();
-        }
-        if (this.active === "none") {
-          this.reset();
+          const objectToSend = {};
+          Object.assign(objectToSend, this.appointment);
+          this.$store.dispatch("updateScheduledAppointment", objectToSend);
         }
       }
+      this.reset();
     },
     reset() {
-      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+      this.active = "none";
       this.$emit("close");
     },
-<<<<<<< HEAD
     //same logis as form validation in dialog
     validAgendaHours() {
       if (this.newAppointment) {
@@ -380,7 +415,7 @@ export default {
           agenda = this.agendas.find(
             agenda => agenda.agendaId === this.appointment.agendaId
           );
-          msg = `Starting Hour Hour must be higher than Agenda Starting hour ${agenda.start}`;
+          msg = `${this.appointment.startHour}Starting Hour Hour must be higher than Agenda Starting hour ${agenda.start}`;
         }
         console.log(msg);
         return value && (value + "").length > 0 && value >= agenda.start;
@@ -388,8 +423,6 @@ export default {
         return true;
       }
     },
-=======
->>>>>>> Task-RecursiveAppointment-F
     // Calculo de lo eventos reccurentes
     recurrentevents(sDate, eDate) {
       let startDate = new Date(sDate);

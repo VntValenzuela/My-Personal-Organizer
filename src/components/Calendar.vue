@@ -1,11 +1,20 @@
 <template>
   <div>
-    <v-app-bar app flat color="white" clipped-left height="50">
+    <v-app-bar app flat color="white" clipped-left height="50" class="mt-2">
       <v-app-bar-nav-icon
         id="nav-var-calendar"
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <img class="mr-3" :src="require('../assets/Calendar.png')" height="40" />
+      <img
+        class="mr-3"
+        src="//www.gstatic.com/calendar/images/dynamiclogo/2x/cal_01_v2.png#"
+        srcset="
+          //www.gstatic.com/calendar/images/dynamiclogo/2x/cal_01_v2.png  2x,
+          //www.gstatic.com/calendar/images/dynamiclogo/2x/cal_01_v2.png# 1x
+        "
+        alt=""
+        height="40"
+      />
       <v-toolbar-title>
         Calendar
       </v-toolbar-title>
@@ -152,12 +161,12 @@
                       v-html="selectedEvent.name"
                     ></v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn icon>
+                    <v-btn icon @click="addPostponeAppointment(selectedEvent)">
                       <v-icon>mdi-calendar-clock</v-icon>
                     </v-btn>
                     <v-btn
-                      @click="deleteScheduledAppointment(selectedEvent.id)"
                       icon
+                      @click="deleteScheduledAppointment(selectedEvent)"
                     >
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
@@ -233,7 +242,8 @@ export default {
     ...mapGetters([
       "getScheduledAppointments",
       "getAgendas",
-      "getParticipants"
+      "getParticipants",
+      "getPostponedAppointments"
     ]),
     appointments() {
       return this.getScheduledAppointments;
@@ -301,12 +311,40 @@ export default {
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
-    deleteScheduledAppointment(deletedScheduledAppointmentId) {
-      this.$store.dispatch(
-        "deleteScheduledAppointment",
-        deletedScheduledAppointmentId
+    deleteScheduledAppointment(deletedScheduledAppointment) {
+      const response = confirm(
+        `Are you sure you want to delete ${deletedScheduledAppointment.name}`
       );
-      this.selectedOpen = false;
+      if (response) {
+        this.$store.dispatch(
+          "deleteScheduledAppointment",
+          deletedScheduledAppointment.id
+        );
+        if (deletedScheduledAppointment.date === this.today) {
+          this.$store.dispatch("addPostponeAppointment", {
+            name: deletedScheduledAppointment.name,
+            description: deletedScheduledAppointment.description
+          });
+          alert(`${deletedScheduledAppointment.name} added to Postpone List`);
+        }
+        this.selectedOpen = false;
+      }
+    },
+    addPostponeAppointment(newPosponedAppointment) {
+      const response = confirm(
+        `Are you sure you want to postpone ${newPosponedAppointment.name}`
+      );
+      if (response) {
+        this.$store.dispatch("addPostponeAppointment", {
+          name: newPosponedAppointment.name,
+          description: newPosponedAppointment.description
+        });
+        this.$store.dispatch(
+          "deleteScheduledAppointment",
+          newPosponedAppointment.id
+        );
+        this.selectedOpen = false;
+      }
     },
     sendData(selectedAppointment, newAppointment) {
       if (newAppointment) {

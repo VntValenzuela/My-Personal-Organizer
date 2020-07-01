@@ -293,7 +293,9 @@ export default {
         let participantSelected = this.participantList.find(
           participant => participant.participantId === this.selectedParticipant
         );
-        if (appointment.participants.includes(participantSelected.name)) {
+        if (
+          appointment.participants.includes(participantSelected.participantId)
+        ) {
           amount++;
           this.upcomingAppointments.push(appointment.name);
         }
