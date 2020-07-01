@@ -297,7 +297,9 @@ export default {
           appointment.participants.includes(participantSelected.participantId)
         ) {
           amount++;
-          this.upcomingAppointments.push(appointment.name);
+          if (!this.upcomingAppointments.includes(appointment.name)) {
+            this.upcomingAppointments.push(appointment.name);
+          }
         }
       });
       return amount;
