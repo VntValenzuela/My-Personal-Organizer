@@ -1,8 +1,6 @@
 //import { assert } from "chai";
 import { mount, createLocalVue } from "@vue/test-utils";
 import Appointment from "@/components/Appointment.vue";
-
-
 import Vuex from "vuex";
 import Vuetify from "vuetify";
 //import store from "@/store";
@@ -35,12 +33,8 @@ describe("Create 3 types of recurrent appointments", () => {
     const wrapper = mount(Appointment, {
       store,
       vuetify,
-      localVue,
+      localVue
     });
-    //const initialLength = 2;
-   // const appointments = wrapper.vm.appointments;
-  //  assert.equal(appointments.length, initialLength);
-
 
     wrapper.vm.$data.appointment = {
       name: "test",
@@ -53,6 +47,8 @@ describe("Create 3 types of recurrent appointments", () => {
     };
 
     wrapper.vm.$data.active = "daily";
+    wrapper.vm.$data.appointment.date = "2020/10/23";
+    wrapper.vm.$data.appointment.endDate = "2020/10/31";
     wrapper.vm.recurrentevents(
       wrapper.vm.$data.appointment.date,
       wrapper.vm.$data.appointment.endDate
@@ -63,16 +59,19 @@ describe("Create 3 types of recurrent appointments", () => {
     );
     const dailyAppointments = wrapper.vm.recurrentdates;
     const expectedlength = 8;
-    assert.equal(dailyAppointments.length, expectedlength);
+    const secondappointment = '"2020-10-25"';
+    const thirdappointmenent = '"2020-10-26"';
 
+    assert.equal(JSON.stringify(dailyAppointments[0].date), secondappointment);
+    assert.equal(JSON.stringify(dailyAppointments[1].date), thirdappointmenent);
+    assert.equal(dailyAppointments.length, expectedlength);
   });
-  it("Create weekly appointment", () => {
+  it("Create 4 weekly appointment", () => {
     const wrapper = mount(Appointment, {
       store,
       vuetify,
-      localVue,
+      localVue
     });
-
 
     wrapper.vm.$data.appointment = {
       name: "test",
@@ -85,6 +84,12 @@ describe("Create 3 types of recurrent appointments", () => {
     };
 
     wrapper.vm.$data.active = "weekly";
+    wrapper.vm.$data.appointment.date = "2020/10/24";
+    wrapper.vm.$data.appointment.endDate = "2020/11/26";
+    const secondappointment = '"2020-11-01"';
+    const thirdappointmenent = '"2020-11-08"';
+    const fourthappointment = '"2020-11-15"';
+    const fifthappointmenent = '"2020-11-22"';
     wrapper.vm.recurrentevents(
       wrapper.vm.$data.appointment.date,
       wrapper.vm.$data.appointment.endDate
@@ -95,14 +100,23 @@ describe("Create 3 types of recurrent appointments", () => {
     );
     const weeklyAppointments = wrapper.vm.recurrentdates;
     const expectedlength = 4;
+    assert.equal(JSON.stringify(weeklyAppointments[0].date), secondappointment);
+    assert.equal(
+      JSON.stringify(weeklyAppointments[1].date),
+      thirdappointmenent
+    );
+    assert.equal(JSON.stringify(weeklyAppointments[2].date), fourthappointment);
+    assert.equal(
+      JSON.stringify(weeklyAppointments[3].date),
+      fifthappointmenent
+    );
     assert.equal(weeklyAppointments.length, expectedlength);
-
   });
   it("Create 2 monthly appointments", () => {
     const wrapper = mount(Appointment, {
       store,
       vuetify,
-      localVue,
+      localVue
     });
 
     wrapper.vm.$data.appointment = {
@@ -115,8 +129,10 @@ describe("Create 3 types of recurrent appointments", () => {
       participants: []
     };
 
-      wrapper.vm.$data.active = "monthly";
-      wrapper.vm.recurrentevents(
+    wrapper.vm.$data.active = "monthly";
+    wrapper.vm.$data.appointment.date = "2020/10/15";
+    wrapper.vm.$data.appointment.endDate = "2020/12/26";
+    wrapper.vm.recurrentevents(
       wrapper.vm.$data.appointment.date,
       wrapper.vm.$data.appointment.endDate
     );
@@ -124,10 +140,18 @@ describe("Create 3 types of recurrent appointments", () => {
     console.log(
       "Monthly Appointments " + JSON.stringify(wrapper.vm.recurrentdates)
     );
-      const monthlyAppointments = wrapper.vm.recurrentdates;
-      const expectedlength = 2;
-      assert.equal(monthlyAppointments.length, expectedlength);
-
+    const monthlyAppointments = wrapper.vm.recurrentdates;
+    const expectedlength = 2;
+    const secondappointment = '"2020-11-16"';
+    const thirdappointmenent = '"2020-12-16"';
+    assert.equal(
+      JSON.stringify(monthlyAppointments[0].date),
+      secondappointment
+    );
+    assert.equal(
+      JSON.stringify(monthlyAppointments[1].date),
+      thirdappointmenent
+    );
+    assert.equal(monthlyAppointments.length, expectedlength);
   });
 });
- 

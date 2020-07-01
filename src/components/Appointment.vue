@@ -433,40 +433,59 @@ export default {
       // Evento recurrente diario
       if (this.active === "daily") {
         this.recurrentdates = [];
-        let nextOccurrence = new Date(
+        let dailyStartDate = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
           startDate.getDate() + 1
         );
-        while (endDate.getTime() >= nextOccurrence.getTime()) {
-          startDate = nextOccurrence;
-          nextOccurrence = new Date(
-            startDate.getFullYear(),
-            startDate.getMonth(),
-            startDate.getDate() + 1
-          );
+        let dailyEndDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate() + 1
+        );
+        let nextOccurrence = new Date(
+          dailyStartDate.getFullYear(),
+          dailyStartDate.getMonth(),
+          dailyStartDate.getDate() + 1
+        );
+        console.log("Fecha de inicio: " + dailyStartDate);
+        console.log("Fecha de fin :" + dailyEndDate);
+        while (dailyEndDate.getTime() >= nextOccurrence.getTime()) {
+          dailyStartDate = nextOccurrence;
           let date = nextOccurrence.toISOString().substr(0, 10);
           //Insertando todas la fechas calculadas en un array
           this.recurrentdates.push({
             date
           });
-          // console.log("Fecha de fin :" + endDate);
+          nextOccurrence = new Date(
+            dailyStartDate.getFullYear(),
+            dailyStartDate.getMonth(),
+            dailyStartDate.getDate() + 1
+          );
         }
         // Evento recurrente semanal
       } else if (this.active === "weekly") {
+        this.recurrentdates = [];
         let weeklyEndDate = new Date(
           endDate.getFullYear(),
           endDate.getMonth(),
           endDate.getDate() + 1
         );
-        this.recurrentdates = [];
-        let nextOccurrence = new Date(
+        let weeklyStartDate = new Date(
           startDate.getFullYear(),
           startDate.getMonth(),
-          startDate.getDate() + 8
+          startDate.getDate() + 1
         );
+        let nextOccurrence = new Date(
+          weeklyStartDate.getFullYear(),
+          weeklyStartDate.getMonth(),
+          weeklyStartDate.getDate() + 7
+        );
+        console.log("Fecha de inicio: " + weeklyStartDate);
+        console.log("Fecha de fin: " + weeklyEndDate);
         while (weeklyEndDate.getTime() >= nextOccurrence.getTime()) {
-          startDate = nextOccurrence;
+          weeklyStartDate = nextOccurrence;
+
           if (nextOccurrence.getTime() > weeklyEndDate.getTime()) {
             console.log("La fecha sobrepasa la fecha limite");
           } else {
@@ -474,14 +493,13 @@ export default {
             this.recurrentdates.push({
               date
             });
-            console.log("Fecha de fin :" + weeklyEndDate);
             console.log("Fecha del siguiente appointment formato ISO: " + date);
+            nextOccurrence = new Date(
+              weeklyStartDate.getFullYear(),
+              weeklyStartDate.getMonth(),
+              weeklyStartDate.getDate() + 7
+            );
           }
-          nextOccurrence = new Date(
-            startDate.getFullYear(),
-            startDate.getMonth(),
-            startDate.getDate() + 7
-          );
         }
         // Evento recurrente mensual
       } else if (this.active === "monthly") {
@@ -708,8 +726,9 @@ export default {
             monthlyStartDate.getDate() + 30
           );
         }
+        console.log("Fecha de fin: " + monthlyEndDate);
+        console.log("Fecha Inicial: " + monthlyStartDate);
         while (monthlyEndDate.getTime() >= nextOccurrence.getTime()) {
-          console.log("Fecha Inicial----" + monthlyStartDate);
           let previousOccurence = monthlyStartDate;
           monthlyStartDate = nextOccurrence;
           console.log("Fecha del siguiente appointment: " + nextOccurrence);
@@ -721,7 +740,7 @@ export default {
               date
             });
             console.log("Fecha del siguiente appointment formato ISO: " + date);
-            console.log("Fecha de fin :" + monthlyEndDate);
+
             nextOccurrence = new Date(
               monthlyStartDate.getFullYear(),
               monthlyStartDate.getMonth(),
