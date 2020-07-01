@@ -177,6 +177,12 @@
                       {{ selectedEvent.startHour }} -
                       {{ selectedEvent.endHour }}
                     </h3>
+                    <span v-if="participantsEvent.length > 0"
+                      >Participants</span
+                    >
+                    <h3>
+                      {{ participantsEvent }}
+                    </h3>
                   </v-card-text>
                   <v-card-actions>
                     <v-btn text color="secondary" @click="selectedOpen = false">
@@ -195,6 +201,7 @@
             </v-sheet>
           </v-col>
           <Appointment
+            ref="appointmentDialog"
             :selectedAppointment="selectedAppointment"
             :dialog="dialog"
             :newAppointment="newAppointment"
@@ -236,7 +243,8 @@ export default {
     newAppointment: false,
     selectedAppointment: {},
     selectedAgendas: [],
-    filteredEvents: []
+    filteredEvents: [],
+    participantsEvent: ""
   }),
   computed: {
     ...mapGetters([
@@ -303,6 +311,7 @@ export default {
       }
 
       nativeEvent.stopPropagation();
+      this.participantsEvent = this.getParticipantsEvent(event.participants);
     },
     updateRange({ start, end }) {
       this.start = start;
@@ -379,6 +388,17 @@ export default {
     },
     redirectToView(route) {
       this.$router.push(`/${route}`);
+    },
+    getParticipantsEvent(participants) {
+      let participantsToReturn = "";
+      if (participants) {
+        participantsToReturn = participants
+          .map(id => this.getParticipants[id].name)
+          .join(", ");
+        console.log(participantsToReturn + "Todo Correcto");
+      }
+      console.log(participantsToReturn + "Indefinido");
+      return participantsToReturn;
     }
   },
   watch: {

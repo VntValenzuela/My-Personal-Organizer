@@ -403,7 +403,7 @@ export default {
       }
     },
     reset() {
-      this.$refs.form.resetValidation();
+      //this.$refs.form.resetValidation();
       //this.active = "none";
       this.$emit("close");
     },

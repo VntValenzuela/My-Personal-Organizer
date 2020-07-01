@@ -14,28 +14,28 @@ const state = {
     {
       agendaId: "A-1",
       name: "Work",
-      description: "my agenda for work",
+      description: "My agenda for work",
       start: "08:30",
-      end: "18:30",
+      end: "19:30",
       color: "#4DB6AC",
       appointments: ["not-null", "nor-null"]
     },
     {
       agendaId: "A-2",
       name: "Personal",
-      description: "my agenda for my things",
-      start: "18:30",
-      end: "21:30",
+      description: "My agenda for my things",
+      start: "12:00",
+      end: "18:30",
       color: "#FFEA00",
       appointments: []
     },
     {
       agendaId: "A-3",
       name: "Entertainment",
-      description: "for entertainment",
-      start: "11:30",
-      end: "14:30",
-      color: "#90A4AE",
+      description: "My agenda for entertainment",
+      start: "19:00",
+      end: "23:30",
+      color: "#283593",
       appointments: []
     }
   ],
@@ -92,41 +92,43 @@ const state = {
   scheduledAppointments: [
     {
       id: "SAP-0001",
-      name: "Dentist",
-      description: "I need to go to dentist",
-      date: "2020-07-22",
-      startHour: "10:00",
-      endHour: "11:00",
+      name: "Certi II Test",
+      description: "I have to defend my project",
+      date: "2020-07-01",
+      startHour: "19:00",
+      endHour: "19:30",
       agendaId: "A-1",
-      participants: [1, 2]
+      participants: [3, 5, 6]
     },
     {
       id: "SAP-0002",
-      name: "Viaje de Negocios",
-      description: "Viaje a Argentina",
-      date: "2020-07-23",
-      startHour: "18:30",
-      endHour: "21:00",
+      name: "Barber",
+      description: "I have to get my mane cut",
+      date: "2020-07-24",
+      startHour: "12:00",
+      endHour: "12:30",
       agendaId: "A-2",
       participants: []
+    },
+    {
+      id: "SAP-0003",
+      name: "Concert",
+      description: "party with friends",
+      date: "2020-07-26",
+      startHour: "19:00",
+      endHour: "23:30",
+      agendaId: "A-3",
+      participants: [1, 2]
     }
   ],
   postponedAppointments: [
     {
-      name: "Dentist",
-      description: "I need to go to dentist"
-      // date: "06/18/2020"
-      // startHour: "10:00",
-      // endHour: "11:00",
-      // agendaId: "A-1"
+      name: "Homework",
+      description: "I have to finish my homework"
     },
     {
-      name: "Excersice",
-      description: "I need to go to GYM"
-      // date: "06/18/2020"
-      // startHour: "10:00",
-      // endHour: "11:00",
-      // agendaId: "A-1"
+      name: "Cleaning",
+      description: "I have to clean my room"
     }
   ],
   recursiveAppointments: [
