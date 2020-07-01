@@ -187,11 +187,7 @@ export default {
         ) +
         this.recursiveAppointments.filter(
           recursiveAppointment => recursiveAppointment.agendaId == agendaId
-        ) /*+
-        
-        this.postponedAppointments.filter(
-          postponedAppointment => postponedAppointment.agendaId == agendaId
-        )*/
+        )
       );
     }
   }

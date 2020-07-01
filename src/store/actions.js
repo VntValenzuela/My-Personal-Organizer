@@ -40,9 +40,9 @@ export default {
     commit("updateScheduledAppointment", updatedScheduledAppointment);
   },
   addPostponeAppointment({ commit }, newPostponeAppointment) {
-    commit("addScheduledAppointment", newPostponeAppointment);
+    commit("addPostponeAppointment", newPostponeAppointment);
   },
-  deletePostponeAppointment({ commit }, deletedPostponeAppointmentId) {
-    commit("deleteScheduledAppointment", deletedPostponeAppointmentId);
+  deletePostponeAppointment({ commit }, deletedPostponeAppointmentName) {
+    commit("deletePostponeAppointment", deletedPostponeAppointmentName);
   }
 };

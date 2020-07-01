@@ -58,7 +58,7 @@ export default {
       startHour: "10:00",
       endHour: "11:00",
       agendaId: "A-1",
-      participants: ["Valentina Flores Rios", "Carlos Gomez Velarde"]
+      participants: [8, 7]
     },
     {
       id: "SAP-0002",
@@ -68,7 +68,7 @@ export default {
       startHour: "22:00",
       endHour: "23:00",
       agendaId: "A-1",
-      participants: ["Santiago Fernandez Rios"]
+      participants: [5]
     }
   ]
 };

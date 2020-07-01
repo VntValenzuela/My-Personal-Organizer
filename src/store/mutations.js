@@ -62,6 +62,7 @@ export default {
     state.scheduledAppointments.push(newScheduledAppointment);
   },
   deleteScheduledAppointment(state, deletedScheduledAppointmentId) {
+    console.log("Deleting: " + deletedScheduledAppointmentId);
     state.scheduledAppointments = state.scheduledAppointments.filter(
       scheduledAppointment =>
         scheduledAppointment.id !== deletedScheduledAppointmentId
@@ -84,10 +85,10 @@ export default {
   addPostponeAppointment(state, newPostponeAppointment) {
     state.postponedAppointments.push(newPostponeAppointment);
   },
-  deletePostponeAppointment(state, deletedPostponeAppointmentId) {
+  deletePostponeAppointment(state, deletedPostponeAppointmentName) {
     state.postponedAppointments = state.postponedAppointments.filter(
       postponedAppointments =>
-        postponedAppointments.name !== deletedPostponeAppointmentId
+        postponedAppointments.name !== deletedPostponeAppointmentName
     );
   }
 };

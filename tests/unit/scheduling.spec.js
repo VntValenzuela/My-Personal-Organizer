@@ -57,6 +57,8 @@ describe("Scheduling Appointments / meetings", () => {
   });
 
   it("Delete an Appointment", () => {
+    global.alert = () => {};
+    global.confirm = () => true;
     const wrapper = shallowMount(Calendar, {
       store,
       vuetify,
@@ -68,7 +70,10 @@ describe("Scheduling Appointments / meetings", () => {
     assert.equal(appointments.length, initialLength);
 
     const idToDelete = "SAP-0003";
-    wrapper.vm.deleteScheduledAppointment(idToDelete);
+    wrapper.vm.deleteScheduledAppointment({
+      name: "Element To Delete",
+      id: idToDelete
+    });
     //console.log(JSON.stringify(wrapper.vm.appointments));
     const appointmentsAfterDetele = wrapper.vm.appointments;
     const expectedLength = 2;
@@ -110,13 +115,13 @@ describe("Scheduling Appointments / meetings", () => {
       propsData: {
         newAppointment: true,
         selectedAppointment: {
-          id: "SAP-0003",
+          id: "SAP-0002",
           name: updatedName,
           description: "UpdatedDescription",
           agendaId: "A-1",
           date: "2020-06-24",
-          startHour: "22:00",
-          endHour: "23:59",
+          startHour: "00:00",
+          endHour: "01:00",
           participants: []
         }
       },
@@ -132,7 +137,7 @@ describe("Scheduling Appointments / meetings", () => {
     wrapper.vm.updateScheduledAppointment();
     //console.log(JSON.stringify(wrapper.vm.appointment));
     const appointmentsAfter = wrapper.vm.appointments;
-    console.log(JSON.stringify(appointmentsAfter));
+    //console.log(JSON.stringify(appointmentsAfter));
     assert.notEqual(appointmentsAfter[1].name, updatedName);
   });
 
@@ -172,5 +177,29 @@ describe("Scheduling Appointments / meetings", () => {
     //console.log("size: " + list.length);
     const expectedLength = 3;
     assert.equal(listOfCheckboxes.length, expectedLength);
+  });
+  it("Postpone an Appointment", async () => {
+    global.alert = () => {};
+    global.confirm = () => true;
+    const wrapper = shallowMount(Calendar, {
+      store,
+      vuetify,
+      localVue
+    });
+    const initialLengthPostponed = 0;
+    const initialLengthAppointments = 2;
+    const appointments = wrapper.vm.appointments;
+    const postponed = wrapper.vm.getPostponedAppointments;
+    assert.equal(appointments.length, initialLengthAppointments);
+    assert.equal(postponed.length, initialLengthPostponed);
+
+    const appointmentToPostpone = appointments[1];
+    wrapper.vm.addPostponeAppointment(appointmentToPostpone);
+    wrapper.vm.deleteScheduledAppointment(appointmentToPostpone);
+
+    let expectedLengths = 1;
+    const appointmentsAfterPostpone = wrapper.vm.appointments;
+    assert.equal(postponed.length, expectedLengths);
+    assert.equal(appointmentsAfterPostpone.length, expectedLengths);
   });
 });

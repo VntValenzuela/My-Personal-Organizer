@@ -83,11 +83,6 @@ describe("Postpone Module", () => {
     await wrapper.vm.$forceUpdate();
 
     assert.equal(postponeArray.length, 4);
-
-    assert.equal(
-      postponeArray.length,
-      wrapper.vm.$data.postponedAppointments.length
-    );
   });
 
   it("Button return exist", async () => {
@@ -144,7 +139,6 @@ describe("Postpone Module", () => {
     let expectedLength = 3;
 
     const postponeArray = wrapperPostpone.vm.table;
-
     assert.equal(postponeArray.length, expectedLength);
     assert.equal(appointments.length, expectedLength);
   });
@@ -157,21 +151,17 @@ describe("Postpone Module", () => {
       router
     });
 
-    const appointment = (wrapperPostpone.vm.$data.item = {
-      name: "Dentist",
-      description: "I need to go to dentist",
-      date: "24/10/2020",
-      startHour: "00:00",
-      endHour: "23:59",
-      participants: []
-    });
+    const appointment = {
+      name: "Sleep",
+      description: "I need to sleep"
+    };
 
     wrapperPostpone.vm.deleteItem(appointment);
 
     let expectedLength = 2;
 
     const postponeArray = wrapperPostpone.vm.table;
-
+    console.log(JSON.stringify(postponeArray));
     assert.equal(postponeArray.length, expectedLength);
   });
 });
